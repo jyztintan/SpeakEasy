@@ -1,13 +1,16 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
+import LoginPage from "./components/LoginPage";
 
 function App() {
   return (
-    <>
-      <Button variant="outline">Button</Button>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<div>main page</div>} />
+        <Route path="/login" element={<LoginPage />} />
+        {/* <Route path="*" element={<NotFoundPage />} /> */}
+      </Routes>
+    </BrowserRouter>
   );
 }
 
