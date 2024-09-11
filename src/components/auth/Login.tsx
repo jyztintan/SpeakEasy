@@ -1,34 +1,17 @@
-import { Button } from "@/components/ui/button";
-import {
-  CredentialResponse,
-  GoogleLogin,
-  googleLogout,
-} from "@react-oauth/google";
-import { useState } from "react";
+import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
+import { useUserAuth } from "./UserAuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [isLogIn, setLogIn] = useState(false);
+  const { logIn } = useUserAuth();
+  const navigate = useNavigate();
 
-  const responseMessage = (response: CredentialResponse) => {
-    console.log(response);
-    setLogIn(true);
+  const logInUser = (response: CredentialResponse) => {
+    logIn(response);
+    navigate("/dashboard");
   };
 
-  const logOut = () => {
-    googleLogout();
-    setLogIn(false);
-  };
-
-  return (
-    <>
-      <GoogleLogin onSuccess={responseMessage} onError={console.log} />
-      {isLogIn && (
-        <Button variant="outline" onClick={logOut}>
-          Logout
-        </Button>
-      )}
-    </>
-  );
+  return <GoogleLogin onSuccess={logInUser} onError={console.log} />;
 };
 
 export default Login;

@@ -10,8 +10,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Bell, Camera, Home, ShoppingCart, User } from "lucide-react";
+import { useUserAuth } from "../auth/UserAuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
+  const { logOut } = useUserAuth();
+  const navigate = useNavigate();
+
+  const logOutUser = () => {
+    logOut();
+    navigate("/login");
+  };
+
   const menuItems = [
     { name: "Home", icon: <Home size={14} /> },
     { name: "Products", icon: <ShoppingCart size={14} /> },
@@ -96,7 +106,7 @@ export default function Navbar() {
         <DropdownMenuSeparator />
         <DropdownMenuItem>Profile</DropdownMenuItem>
         <DropdownMenuItem>Settings</DropdownMenuItem>
-        <DropdownMenuItem>Logout</DropdownMenuItem>
+        <DropdownMenuItem onClick={logOutUser}>Logout</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
