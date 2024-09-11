@@ -1,18 +1,27 @@
 import LoginPage from "@/components/auth/LoginPage";
 import HomePage from "@/components/dashboard/Home";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { UserAuthContextProvider } from "./components/auth/UserAuthContext";
 import "./App.css";
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<div>main page</div>} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/dashboard" element={<HomePage />} />
-        {/* <Route path="*" element={<NotFoundPage />} /> */}
-      </Routes>
-    </BrowserRouter>
-  )
+    <UserAuthContextProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <HomePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<LoginPage />} />
+        </Routes>
+      </BrowserRouter>
+    </UserAuthContextProvider>
+  );
 }
-
