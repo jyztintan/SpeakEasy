@@ -1,16 +1,17 @@
-import React, { useState } from "react";
-import { googleLogout, GoogleLogin } from "@react-oauth/google";
 import { Button } from "@/components/ui/button";
+import {
+  CredentialResponse,
+  GoogleLogin,
+  googleLogout,
+} from "@react-oauth/google";
+import { useState } from "react";
 
 const Login = () => {
   const [isLogIn, setLogIn] = useState(false);
 
-  const responseMessage = (response) => {
+  const responseMessage = (response: CredentialResponse) => {
     console.log(response);
     setLogIn(true);
-  };
-  const errorMessage = (error) => {
-    console.log(error);
   };
 
   const logOut = () => {
@@ -20,7 +21,7 @@ const Login = () => {
 
   return (
     <>
-      <GoogleLogin onSuccess={responseMessage} onError={errorMessage} />
+      <GoogleLogin onSuccess={responseMessage} onError={console.log} />
       {isLogIn && (
         <Button variant="outline" onClick={logOut}>
           Logout
