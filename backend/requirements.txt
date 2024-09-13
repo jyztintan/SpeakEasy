@@ -26,3 +26,4 @@ tqdm==4.66.5
 typing_extensions==4.12.2
 urllib3==2.2.2
 wheel==0.43.0
+pymongo==4.8.0
