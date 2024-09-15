@@ -18,7 +18,7 @@ def openai_call(prompt):
         max_tokens=60,
         temperature=0.5  # "Creativity" or rather randomness of response
     )
-    print(response.choices[0].message.content)
+    # print(response.choices[0].message.content)
     return response.choices[0].message.content
 
-print(openai_call("your mother very nice"))
+# print(openai_call("your mother very nice"))
