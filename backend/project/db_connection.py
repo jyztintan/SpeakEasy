@@ -16,11 +16,8 @@ except Exception as e:
     print(e)
 
 db = client["assignment3"]
-collection = db["test_collection"]
-item = {
-    "name": "test",
-    "no.": 2
-}
-collection.insert_one(item)
 
-print("Successfully connected to mongodb atlas")
+users_collection = db["Users"]
+scenarios_collection = db["Scenarios"]
+
+# print("Successfully connected to mongodb atlas")
