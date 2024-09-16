@@ -2,12 +2,7 @@ from django.http import JsonResponse, HttpResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .serializer import (
-    ScenarioSerializer,
-    UserSerializer,
-    ConversationSerializer,
-    LLMResponseSerializer,
-)
+from .serializer import UserSerializer
 from .process_prompt import openai_call
 from db_connection import users_collection, scenarios_collection
 from .view_helpers.scenario_helpers import create_scenario, delete_scenario
@@ -39,7 +34,7 @@ def create_user(request):
         )
     data = request.data.copy()
     # add fixed scenario ids
-    data["scenarios"] = [1, 2, 3]
+    data["scenarios_id"] = [1, 2, 3]
     serializer = UserSerializer(data=data)
     if serializer.is_valid():
         # insert new user into user collection
@@ -66,7 +61,7 @@ def get_scenarios(request, user_id):
         del user["_id"]
 
         # Query scenarios_collection to get scenarios where 'scenario_id' is in user['scenarios']
-        scenario_ids = user.get("scenarios", [])
+        scenario_ids = user.get("scenarios_id", [])
         if not scenario_ids or not isinstance(scenario_ids, list):
             return Response(
                 {"error": "No scenarios found for this user"},

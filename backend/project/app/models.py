@@ -9,9 +9,8 @@ class User(models.Model):
 
 class Scenario(models.Model):
     scenario_id = models.IntegerField()
-    # TODO check if this works
     name = models.CharField(max_length=200)
-    # image = models.ImageField()
+    image = models.CharField(max_length=100000)  # image converted to base64 str
     context = models.CharField(max_length=1000)
     first_message = models.CharField(max_length=10000)
 

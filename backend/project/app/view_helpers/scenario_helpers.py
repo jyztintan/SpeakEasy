@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from ..serializer import ScenarioSerializer
 from db_connection import users_collection, scenarios_collection
+import base64
 
 
 def delete_scenario(request):
@@ -51,9 +52,21 @@ def create_scenario(request):
     # {
     #      "user_id" : "newuserbryan",
     #      "context" : "hello world",
+    #      "image" : image
     #      "name" : "name of scenario",
     #      "first_message" : "good bye world"
     #  }
+
+    # Handle image file from request.FILES
+    image_file = request.FILES.get("image")
+    if image_file:
+        # convert image to base64 for easy storage
+        image_binary = image_file.read()
+        image_base64 = base64.b64encode(image_binary).decode("utf-8")
+    else:
+        return Response(
+            {"error": "image is required"}, status=status.HTTP_400_BAD_REQUEST
+        )
 
     # dirty way of getting next scenario_id, should be ok for small scenrio collection
     last_scenario = scenarios_collection.find_one(sort=[("scenario_id", -1)])
@@ -64,6 +77,7 @@ def create_scenario(request):
         key: value for key, value in request.data.items() if key != "user_id"
     }
     scenario_data["scenario_id"] = new_scenario_id
+    scenario_data["image"] = image_base64
     serializer = ScenarioSerializer(data=scenario_data)
     if serializer.is_valid():
         try:
