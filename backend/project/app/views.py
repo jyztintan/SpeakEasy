@@ -8,10 +8,13 @@ from .serializer import (
     ConversationSerializer,
     LLMResponseSerializer,
 )
-from .models import User
 from .process_prompt import openai_call
 from db_connection import users_collection, scenarios_collection
-from pymongo.errors import DuplicateKeyError, OperationFailure
+from .view_helpers.scenario_helpers import create_scenario, delete_scenario
+from .view_helpers.conversation_helpers import (
+    response_to_conversation,
+    response_to_get_help,
+)
 
 # Create your views here.
 # Views are request handlers
@@ -24,6 +27,16 @@ def test(request):
 
 @api_view(["POST"])
 def create_user(request):
+    user_id = request.data.get("user_id", None)
+    if not user_id:
+        return Response(
+            {"error": "User_id is required"}, status=status.HTTP_404_NOT_FOUND
+        )
+    user = users_collection.find_one({"user_id": user_id})
+    if user:
+        return Response(
+            {"error": "user_id already exists"}, status=status.HTTP_404_NOT_FOUND
+        )
     data = request.data.copy()
     # add fixed scenario ids
     data["scenarios"] = [1, 2, 3]
@@ -37,6 +50,11 @@ def create_user(request):
 
 @api_view(["GET"])
 def get_scenarios(request, user_id):
+    if not user_id:
+        return Response(
+            {"error": "user_id is required"}, status=status.HTTP_400_BAD_REQUEST
+        )
+
     try:
         user = users_collection.find_one({"user_id": user_id})
         if not user:
@@ -69,112 +87,26 @@ def get_scenarios(request, user_id):
 
 
 @api_view(["POST", "DELETE"])
-def create_scenario(request):
-    # request body
-    # {
-    # "user_id" : "newuserbryan",
-    # "scenario_id" : 891,
-    # "context" : "some context"
-    # }
+def resouce_scenario(request):
     user_id = request.data.get("user_id", None)
-    new_scenario_id = request.data.get("scenario_id", None)
 
     if not user_id:
         return Response(
             {"error": "user_id is required"}, status=status.HTTP_400_BAD_REQUEST
         )
-    if not new_scenario_id:
-        return Response(
-            {"error": "scenario_id is required"}, status=status.HTTP_400_BAD_REQUEST
-        )
+
+    if request.method == "POST":
+        return create_scenario(request)
 
     if request.method == "DELETE":
-        return delete_scenario(user_id, new_scenario_id)
-
-    # method == POST
-    existing_scenario = scenarios_collection.find_one({"scenario_id": new_scenario_id})
-    if existing_scenario:
-        raise DuplicateKeyError(
-            f"Scenario with ID {new_scenario_id} already exists in the database."
-        )
-
-    scenario_data = {
-        key: value for key, value in request.data.items() if key != "user_id"
-    }
-    serializer = ScenarioSerializer(data=scenario_data)
-    if serializer.is_valid():
-        try:
-            # update user's scenarios_id arr
-            users_collection.update_one(
-                {"user_id": user_id},
-                {
-                    "$addToSet": {"scenarios_id": new_scenario_id}
-                },  # Update: add new_scenario_id to the scenarios_id array
-            )
-            # add scenario to collections
-            scenarios_collection.insert_one(serializer.data)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except OperationFailure as e:
-            return Response(
-                {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-def delete_scenario(user_id, scenario_id):
-    # request body
-    # {
-    # "user_id" : "newuserbryan",
-    # "scenario_id" : 891
-    # }
-    # Check if the scenario exists in the collection
-    existing_scenario = scenarios_collection.find_one({"scenario_id": scenario_id})
-    if not existing_scenario:
-        return Response(
-            {"error": f"Scenario with ID {scenario_id} does not exist."},
-            status=status.HTTP_404_NOT_FOUND,
-        )
-
-    try:
-        # Remove the scenario from the user's scenarios_id array
-        users_collection.update_one(
-            {"user_id": user_id},
-            {"$pull": {"scenarios_id": scenario_id}},  # Remove scenario_id from array
-        )
-
-        # Delete the scenario from the scenarios_collection
-        scenarios_collection.delete_one({"scenario_id": scenario_id})
-
-        return Response(
-            {"message": f"Scenario {scenario_id} deleted successfully."},
-            status=status.HTTP_200_OK,
-        )
-
-    except OperationFailure as e:
-        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return delete_scenario(request)
 
 
 @api_view(["POST"])
 def create_conversation_response(request):
-    # request body
-    # {
-    # "user_id" : "test",
-    # "scenario_id" : 1,
-    # "user_text" : "ni hao"
-    # }
-    serializer = ConversationSerializer(data=request.data)
-    if serializer.is_valid():
-        # TODO for justin, call chatGPT api here
-        mock_response = {
-            "reply": "gpt's reply",
-            "feedback": "you could have done this better!",
-        }
-        return Response(LLMResponseSerializer(mock_response).data)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return response_to_conversation(request)
 
 
-def generate_openai_response(request):
-    # You can test with http://127.0.0.1:8000/test-openai/?original=your_mother_is_nice
-    original = request.GET.get("original")
-    translated = openai_call(original)
-    return JsonResponse({"translation": translated})
+@api_view(["POST"])
+def request_help(request):
+    return response_to_get_help(request)
