@@ -1,9 +1,11 @@
 import LoginPage from "@/components/auth/LoginPage";
 import HomePage from "@/components/dashboard/Home";
-import ProtectedRoute from "./components/auth/ProtectedRoute";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { UserAuthContextProvider } from "./components/auth/UserAuthContext";
 import "./App.css";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
+import { UserAuthContextProvider } from "./components/auth/UserAuthContext";
+import ConversationPage from "./components/conversation/Conversation";
+import ScenarioPage from "./components/scenario/Scenario";
 
 export default function App() {
   return (
@@ -16,6 +18,22 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <HomePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/scenario"
+            element={
+              <ProtectedRoute>
+                <ScenarioPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/conversation"
+            element={
+              <ProtectedRoute>
+                <ConversationPage />
               </ProtectedRoute>
             }
           />
