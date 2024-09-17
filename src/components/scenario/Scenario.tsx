@@ -1,7 +1,7 @@
 import { useSearchParams } from "react-router-dom";
+import { Scenario } from "../dashboard/Home";
 import Navbar from "../navigation/Navbar";
 import { Button } from "../ui/button";
-import { Scenario } from "../dashboard/Home";
 
 export default function ScenarioPage() {
   const [searchParams] = useSearchParams();
