@@ -4,6 +4,7 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { UserAuthContextProvider } from "./components/auth/UserAuthContext";
 import "./App.css";
+import ScenarioPage from "./components/scenario/Scenario";
 
 export default function App() {
   return (
@@ -16,6 +17,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <HomePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/scenario"
+            element={
+              <ProtectedRoute>
+                <ScenarioPage />
               </ProtectedRoute>
             }
           />

@@ -69,7 +69,7 @@ export default function SnapPhoto({ isMobile }: { isMobile: boolean }) {
         ) : (
           <Button className="flex items-center">
             <Camera size={16} className="mr-2" />
-            Snap Photo
+            <span>Snap Photo</span>
           </Button>
         )}
       </DialogTrigger>
