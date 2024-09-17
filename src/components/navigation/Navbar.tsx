@@ -9,9 +9,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Bell, Camera, Home, ShoppingCart, User } from "lucide-react";
-import { useUserAuth } from "../auth/UserAuthContext";
+import { Camera, Home, LogOut, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useUserAuth } from "../auth/UserAuthContext";
 
 export default function Navbar() {
   const { logOut } = useUserAuth();
@@ -22,17 +22,13 @@ export default function Navbar() {
     navigate("/login");
   };
 
-  const menuItems = [
-    { name: "Home", icon: <Home size={14} /> },
-    { name: "Products", icon: <ShoppingCart size={14} /> },
-    { name: "Notifications", icon: <Bell size={14} /> },
-  ];
+  const menuItems = [{ name: "Dashboard", icon: <Home size={14} /> }];
 
   const DesktopNav = () => (
     <nav className="hidden md:flex items-center justify-between bg-background p-4 border-b">
       <div className="flex items-center space-x-4">
         <a href="/" className="text-2xl font-bold">
-          Logo
+          <img src="/logo.svg" alt="logo" className="h-10" />
         </a>
         {menuItems.map((item) => (
           <a
@@ -75,13 +71,6 @@ export default function Navbar() {
             <Camera size={14} />
             <span className="text-xs">Snap Photo</span>
           </a>
-          <a
-            href={`/${menuItems[2].name.toLowerCase()}`}
-            className="flex flex-col items-center space-y-1 text-foreground hover:text-primary"
-          >
-            {menuItems[2].icon}
-            <span className="text-xs">{menuItems[2].name}</span>
-          </a>
           <ProfileDropdown />
         </div>
       </div>
@@ -104,9 +93,13 @@ export default function Navbar() {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Profile</DropdownMenuItem>
-        <DropdownMenuItem>Settings</DropdownMenuItem>
-        <DropdownMenuItem onClick={logOutUser}>Logout</DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={logOutUser}
+          className="flex space-x-2 items-center"
+        >
+          <LogOut size={12} />
+          <span>Logout</span>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
