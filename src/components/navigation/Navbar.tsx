@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,9 +8,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Camera, Home, LogOut, User } from "lucide-react";
+import { Home, LogOut, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useUserAuth } from "../auth/UserAuthContext";
+import SnapPhoto from "./SnapPhoto";
+
+const menuItems = [{ name: "Dashboard", icon: <Home size={14} /> }];
 
 export default function Navbar() {
   const { logOut } = useUserAuth();
@@ -21,8 +23,6 @@ export default function Navbar() {
     logOut();
     navigate("/login");
   };
-
-  const menuItems = [{ name: "Dashboard", icon: <Home size={14} /> }];
 
   const DesktopNav = () => (
     <nav className="hidden md:flex items-center justify-between bg-background p-4 border-b">
@@ -41,10 +41,7 @@ export default function Navbar() {
         ))}
       </div>
       <div className="flex items-center space-x-4">
-        <Button className="flex items-center">
-          <Camera size={16} className="mr-2" />
-          Snap Photo
-        </Button>
+        <SnapPhoto isMobile={false} />
         <ProfileDropdown />
       </div>
     </nav>
@@ -64,13 +61,7 @@ export default function Navbar() {
               <span className="text-xs">{item.name}</span>
             </a>
           ))}
-          <a
-            href="/"
-            className="flex flex-col items-center space-y-1 text-foreground hover:text-primary"
-          >
-            <Camera size={14} />
-            <span className="text-xs">Snap Photo</span>
-          </a>
+          <SnapPhoto isMobile={true} />
           <ProfileDropdown />
         </div>
       </div>
