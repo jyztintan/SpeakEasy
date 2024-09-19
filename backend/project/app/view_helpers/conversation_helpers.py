@@ -91,7 +91,7 @@ def response_to_get_help(request):
     # {
     #     "user_id": "newuserbryan",
     #     "scenario_id": 1,
-    #     "prev_gpt_message": "What is that on your plate?",
+    #     "prev_gpt_message": "很高兴你觉得这个教程有趣！你学到了什么新知识吗？",
     # }
     prev_message = request.data.get("prev_gpt_message", None)
     if not prev_message:
@@ -99,10 +99,50 @@ def response_to_get_help(request):
             {"error": "prev_gpt_message is required"},
             status=status.HTTP_400_BAD_REQUEST,
         )
-    # TODO justin generate some suggestions
-    mock_response = {
-        "suggestions": ["helper 1", "helper 2", "helper 3"],
-    }
-    return JsonResponse(mock_response)
+    response = generate_openai_suggestions(prev_message)
+    try:
+        response_data = json.loads(response)
+        # mock_response = {
+        #     "suggestions": ["helper 1", "helper 2", "helper 3"],
+        # }
+    except json.JSONDecodeError:
+        return Response(
+            {"error": "Invalid response from OpenAI"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
+    return JsonResponse(response_data)
+
+
+def generate_openai_suggestions(prev_message):
+    prompt = f"""
+            You are a helpful language learning assistant. 
+            Provide a structured JSON response containing the following fields 
+            based on the user's input and strictly nothing else. 
+            No ```json declaration needed, just the JSON object.
+
+            Previous Input: "{prev_message}"
+
+            Requirements:
+            - "first": A meaningful and contextually appropriate response to the Previous Input in Chinese.
+            - "first_en": A direct translation of the first suggestion in English.
+            - "second": A second meaningful and contextually appropriate response to the Previous Input in Chinese.
+            - "second_en": A direct translation of the second suggestion in English.
+            - "third": A third meaningful and contextually appropriate response to the Previous Input in Chinese.
+            - "third_en": A direct translation of the third suggestion in English.
+
+            Ensure the response is in valid JSON format with the exact field names specified.
+            """
+    messages = [
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": prompt}
+    ]
+    client = OpenAI(api_key=api_key)
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=messages,
+        max_tokens=200,
+        temperature=0.8  # Limit randomness of response
+    )
+    # print(response.choices[0].message.content)
+    return response.choices[0].message.content
 
