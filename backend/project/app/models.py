@@ -4,7 +4,7 @@ from django.db import models
 # Create your models here.
 class User(models.Model):
     user_id = models.CharField(max_length=100)
-    scenarios = models.JSONField()
+    scenarios_id = models.JSONField()
 
 
 class Scenario(models.Model):
@@ -22,7 +22,7 @@ class Conversation(models.Model):
 
 
 class LLMResponse(models.Model):
-    text = models.CharField(max_length=10000)
+    text_response = models.CharField(max_length=10000)
     feedback = models.CharField(max_length=1000)
     translated_text = models.CharField(max_length=10000)
     score = models.IntegerField()

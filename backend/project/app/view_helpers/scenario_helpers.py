@@ -1,3 +1,8 @@
+import json
+import os
+
+from dotenv import load_dotenv
+from openai import OpenAI
 from pymongo.errors import DuplicateKeyError, OperationFailure
 from django.http import JsonResponse, HttpResponse
 from rest_framework.response import Response
@@ -5,6 +10,13 @@ from rest_framework import status
 from ..serializer import ScenarioSerializer
 from db_connection import users_collection, scenarios_collection
 import base64
+
+# Global Variables
+load_dotenv()  # Need to call to load env variables
+API_KEY = os.getenv('OPENAI_API_KEY')
+MODEL = "gpt-4o-mini"
+MAX_TOKENS = 200
+TEMPERATURE = 0.8  # Limit randomness of response
 
 
 def delete_scenario(request):
@@ -79,6 +91,19 @@ def create_scenario(request):
     scenario_data["scenario_id"] = new_scenario_id
     scenario_data["image"] = image_base64
     serializer = ScenarioSerializer(data=scenario_data)
+
+    # Refine context and get first message from GPT
+    init_context = scenario_data.get("context")
+    response = generate_openai_init_response(init_context)
+    try:
+        response_data = json.loads(response)
+    except json.JSONDecodeError:
+        return Response(
+            {"error": "Invalid response from OpenAI"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+    scenario_data["context"] = response_data.get("refined_context")
+    scenario_data["first_message"] = response_data.get("first_message")
+
     if serializer.is_valid():
         try:
             # update user's scenarios_id arr
@@ -96,3 +121,32 @@ def create_scenario(request):
                 {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+def generate_openai_init_response(context):
+    prompt = f"""
+            You are a helpful language learning assistant. 
+            Provide a structured JSON response containing the following fields 
+            based on the user's input and strictly nothing else. 
+            No ```json declaration needed, just the JSON object.
+            
+            User's initial context: '{context}'
+            
+            Requirements:
+            - "refined_context": A refined version of the user's initial context that is clear and concise.
+            - "first_message": An initial message to initiate a detailed conversation about the image and context.
+            
+            Ensure the response is in valid JSON format with the exact field names specified.
+        """
+    messages = [
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": prompt}
+        ]
+    client = OpenAI(api_key=API_KEY)
+    response = client.chat.completions.create(
+        model=MODEL,
+        messages=messages,
+        max_tokens=MAX_TOKENS,
+        temperature=TEMPERATURE
+    )
+    return response.choices[0].message.content
