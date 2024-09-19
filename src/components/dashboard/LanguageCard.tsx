@@ -1,9 +1,16 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Scenario } from "./Home";
+import { useNavigate } from "react-router-dom";
 
 export default function LanguageCard({ scenario }: { scenario: Scenario }) {
+  const navigate = useNavigate();
+
+  const directToScenario = () => {
+    navigate(`/dashboard/scenario?id=${scenario.scenario_id}`, { state: { scenario }});
+  };
+
   return (
-    <a href={`/dashboard/scenario?id=${scenario.scenario_id}`}>
+    <div onClick={directToScenario}>
       <Card className="w-80 overflow-hidden">
         <div className="overflow-hidden">
           <img
@@ -17,6 +24,6 @@ export default function LanguageCard({ scenario }: { scenario: Scenario }) {
           <p className="text-sm text-muted-foreground">{scenario.context}</p>
         </CardContent>
       </Card>
-    </a>
+    </div>
   );
 }

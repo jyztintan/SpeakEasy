@@ -1,5 +1,6 @@
 import Navbar from "@/components/navigation/Navbar";
 import LanguageCard from "./LanguageCard";
+import { useEffect, useState } from "react";
 
 export type Scenario = {
   scenario_id: number;
@@ -10,23 +11,28 @@ export type Scenario = {
 };
 
 export default function HomePage() {
-  // TODO: Replace cardData with GET scenarios API
-  const cardData: Scenario[] = [
-    {
-      scenario_id: 1,
-      name: "Walk in the park",
-      image: "https://placehold.co/600x400",
-      context: "Take a walk at central park",
-      first_message: "今天是多么美好的一天，适合散步啊，对吧?",
-    },
-    {
-      scenario_id: 2,
-      name: "Walk in the park",
-      image: "https://placehold.co/600x400",
-      context: "Take a walk at central park",
-      first_message: "今天是多么美好的一天，适合散步啊，对吧?",
-    },
-  ];
+  const user_id = localStorage.getItem("user_id");
+  const [cardData, setCardData] = useState<Scenario[]>([]);
+
+  async function fetchScenarios() : Promise<Scenario[]> {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/v1/scenarios/${user_id}`);
+      const json = await response.json();
+      const scenarios : Scenario[] = json["scenarios"];
+      return scenarios
+    } catch (err) {
+      console.error("Error fetching scenario: ", err);
+      return [];
+    }
+  }
+
+  useEffect(() => {
+    fetchScenarios()
+    .then((scenarios) => { 
+      console.log(scenarios);
+      setCardData(scenarios)});
+  }, [])
+  
   return (
     <div className="min-h-screen w-screen">
       <Navbar />
