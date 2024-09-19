@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Mic, X } from "lucide-react";
 import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useLocation } from "react-router-dom";
 import { Scenario } from "../dashboard/Home";
 import Navbar from "../navigation/Navbar";
 import Message from "./Message";
@@ -18,24 +18,21 @@ export type ConversationResponse = {
 };
 
 export default function ConversationPage() {
+  /** 
   const [searchParams] = useSearchParams();
   const scenario_id = searchParams.get("id");
+  */
 
-  // TODO: GET scenario API
-  const scenario: Scenario = {
-    scenario_id: 2,
-    name: "Walk in the park",
-    image: "https://placehold.co/600x400",
-    context: "Take a walk at central park",
-    first_message: "今天是多么美好的一天，适合散步啊，对吧?",
-  };
+  const location = useLocation();
+  const { scenario } = location.state as { scenario : Scenario };
 
   const [messages, setMessages] = useState<ConversationResponse[]>([
     {
       role: "assistant",
-      text: "你好！今天我能帮你做些什么？",
-      translated_text: "Hello! How can I assist you today?",
+      text: scenario.first_message,
+      translated_text: "Translated text"
     },
+    /**
     {
       role: "user",
       text: "我想找一些提高生产力的建议。",
@@ -76,6 +73,7 @@ export default function ConversationPage() {
       role: "user",
       text: "是的，我以前试过，但有时还是会感到不知所措。",
     },
+    */
   ]);
   return (
     <div className="h-screen w-screen">
@@ -115,11 +113,7 @@ export default function ConversationPage() {
               <div className="flex flex-col space-y-2 text-left">
                 <h2 className="text-xl font-semibold">{scenario.name}</h2>
                 <p className="mb-4">
-                  {scenario.context} Lorem ipsum dolor sit amet consectetur
-                  adipisicing elit. Eum, repellat incidunt consequuntur dolore,
-                  facilis modi neque maiores ad necessitatibus sapiente
-                  praesentium id tempore, totam odio veritatis fugiat nihil
-                  animi quibusdam?
+                  {scenario.context}
                 </p>
               </div>
               <Separator />

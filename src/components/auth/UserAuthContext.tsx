@@ -24,6 +24,7 @@ export function UserAuthContextProvider({ children }: { children: ReactNode }) {
     // console.log(response);
     const credential = JSON.stringify(response.credential);
     localStorage.setItem("SpeakEasyUser", credential);
+    localStorage.setItem("user_id", "test_api_user"); // for testing purpose
     setUser(credential);
   };
 
