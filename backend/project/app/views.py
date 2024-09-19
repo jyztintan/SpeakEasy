@@ -3,7 +3,6 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .serializer import UserSerializer
-from .process_prompt import openai_call
 from db_connection import users_collection, scenarios_collection
 from .view_helpers.scenario_helpers import create_scenario, delete_scenario
 from .view_helpers.conversation_helpers import (
