@@ -10,10 +10,13 @@ from ..serializer import (
     ConversationSerializer,
     LLMResponseSerializer,
 )
-from ..process_prompt import openai_call
 
+# Global Variables
 load_dotenv()  # Need to call to load env variables
-api_key = os.getenv('OPENAI_API_KEY')
+API_KEY = os.getenv('OPENAI_API_KEY')
+MODEL = "gpt-4o-mini"
+MAX_TOKENS = 200
+TEMPERATURE = 0.8  # Limit randomness of response
 
 
 def response_to_conversation(request):
@@ -53,6 +56,7 @@ def response_to_conversation(request):
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 def generate_openai_response(user_text):
     prompt = f"""
             You are a helpful language learning assistant. 
@@ -76,12 +80,12 @@ def generate_openai_response(user_text):
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": prompt}
     ]
-    client = OpenAI(api_key=api_key)
+    client = OpenAI(api_key=API_KEY)
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model=MODEL,
         messages=messages,
-        max_tokens=200,
-        temperature=0.8  # Limit randomness of response
+        max_tokens=MAX_TOKENS,
+        temperature=TEMPERATURE
     )
     # print(response.choices[0].message.content)
     return response.choices[0].message.content
@@ -100,11 +104,16 @@ def response_to_get_help(request):
             status=status.HTTP_400_BAD_REQUEST,
         )
     response = generate_openai_suggestions(prev_message)
+    # mock_response = {
+    #     "first": "我学到了很多关于中文语法的知识，特别是句子的结构。",
+    #     "first_en": "I learned a lot about Chinese grammar, especially sentence structure.",
+    #     "second": "我了解了如何使用更多的词汇来表达我的想法。",
+    #     "second_en": "I learned how to use more vocabulary to express my thoughts.",
+    #     "third": "这个教程让我对汉字的写法有了更深入的理解。",
+    #     "third_en": "This tutorial gave me a deeper understanding of how to write Chinese characters."
+    # }
     try:
         response_data = json.loads(response)
-        # mock_response = {
-        #     "suggestions": ["helper 1", "helper 2", "helper 3"],
-        # }
     except json.JSONDecodeError:
         return Response(
             {"error": "Invalid response from OpenAI"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -136,13 +145,12 @@ def generate_openai_suggestions(prev_message):
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": prompt}
     ]
-    client = OpenAI(api_key=api_key)
+    client = OpenAI(api_key=API_KEY)
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model=MODEL,
         messages=messages,
-        max_tokens=200,
-        temperature=0.8  # Limit randomness of response
+        max_tokens=MAX_TOKENS,
+        temperature=TEMPERATURE
     )
     # print(response.choices[0].message.content)
     return response.choices[0].message.content
-
