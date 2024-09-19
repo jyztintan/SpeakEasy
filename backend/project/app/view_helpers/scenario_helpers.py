@@ -10,10 +10,11 @@ from rest_framework import status
 from ..serializer import ScenarioSerializer
 from db_connection import users_collection, scenarios_collection
 import base64
+from google.cloud import storage
 
 # Global Variables
 load_dotenv()  # Need to call to load env variables
-API_KEY = os.getenv('OPENAI_API_KEY')
+API_KEY = os.getenv("OPENAI_API_KEY")
 MODEL = "gpt-4o-mini"
 MAX_TOKENS = 200
 TEMPERATURE = 0.8  # Limit randomness of response
@@ -71,13 +72,18 @@ def create_scenario(request):
 
     # Handle image file from request.FILES
     image_file = request.FILES.get("image")
-    if image_file:
-        # convert image to base64 for easy storage
-        image_binary = image_file.read()
-        image_base64 = base64.b64encode(image_binary).decode("utf-8")
-    else:
+    if not image_file:
         return Response(
             {"error": "image is required"}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+    image_name = f"{request.data.get('name')}_{image_file.name}"
+    image_url = upload_image_to_cloud_storage(image_file, image_name)
+
+    if not image_url:
+        return Response(
+            {"error": "Failed to upload image to cloud storage"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 
     # dirty way of getting next scenario_id, should be ok for small scenrio collection
@@ -89,7 +95,7 @@ def create_scenario(request):
         key: value for key, value in request.data.items() if key != "user_id"
     }
     scenario_data["scenario_id"] = new_scenario_id
-    scenario_data["image"] = image_base64
+    scenario_data["image"] = image_url
     serializer = ScenarioSerializer(data=scenario_data)
 
     # Refine context and get first message from GPT
@@ -99,7 +105,8 @@ def create_scenario(request):
         response_data = json.loads(response)
     except json.JSONDecodeError:
         return Response(
-            {"error": "Invalid response from OpenAI"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            {"error": "Invalid response from OpenAI"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
     scenario_data["context"] = response_data.get("refined_context")
     scenario_data["first_message"] = response_data.get("first_message")
@@ -139,14 +146,26 @@ def generate_openai_init_response(context):
             Ensure the response is in valid JSON format with the exact field names specified.
         """
     messages = [
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": prompt}
-        ]
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": prompt},
+    ]
     client = OpenAI(api_key=API_KEY)
     response = client.chat.completions.create(
-        model=MODEL,
-        messages=messages,
-        max_tokens=MAX_TOKENS,
-        temperature=TEMPERATURE
+        model=MODEL, messages=messages, max_tokens=MAX_TOKENS, temperature=TEMPERATURE
     )
     return response.choices[0].message.content
+
+
+def upload_image_to_cloud_storage(image_file, image_name):
+    try:
+        client = storage.Client()
+        bucket = client.get_bucket("speakeasy-scenarios")
+        blob = bucket.blob(image_name)
+        blob.upload_from_file(image_file, content_type=image_file.content_type)
+        blob.content_disposition = "inline"
+        blob.patch()
+        blob.make_public()
+        return blob.public_url
+    except Exception as e:
+        print(str(e))
+        return False
