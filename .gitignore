@@ -31,3 +31,4 @@ venv/
 __pycache__/
 *.pyc
 .DS_Store
+Speakeasy_Code_Access.json
