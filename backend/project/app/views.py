@@ -82,7 +82,7 @@ def get_scenarios(request, user_id):
 
 
 @api_view(["POST", "DELETE"])
-def resouce_scenario(request):
+def resource_scenario(request):
     user_id = request.data.get("user_id", None)
 
     if not user_id:
