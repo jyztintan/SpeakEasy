@@ -5,6 +5,7 @@ import "./App.css";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import { UserAuthContextProvider } from "./components/auth/UserAuthContext";
 import ConversationPage from "./components/conversation/Conversation";
+import LandingPage from "./components/landing/Landing";
 import ScenarioPage from "./components/scenario/Scenario";
 
 export default function App() {
@@ -12,7 +13,8 @@ export default function App() {
     <UserAuthContextProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<LoginPage />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<LoginPage />} />
           <Route
             path="/dashboard"
             element={
@@ -37,7 +39,7 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="*" element={<LoginPage />} />
+          <Route path="*" element={<LandingPage />} />
         </Routes>
       </BrowserRouter>
     </UserAuthContextProvider>
