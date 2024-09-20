@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+import tempfile
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,7 +30,7 @@ SECRET_KEY = "django-insecure-7--nbfw##l9%mgx*%s=cfke%$7awqzst#i7@!6pk2dp=$*fka1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [".vercel.app"]
+ALLOWED_HOSTS = [".vercel.app", "localhost", "127.0.0.1"]
 
 
 # Application definition
@@ -131,7 +135,22 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.join(
-    BASE_DIR, "project", "Speakeasy_Code_Access.json"
-)
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.join(
+#     BASE_DIR, "project", "Speakeasy_Code_Access.json"
+# )
+
+google_creds_json = os.getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON")
+
+if google_creds_json:
+    # Write the JSON content to a temporary file
+    with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+        temp_file.write(google_creds_json.encode())  # Write bytes to the temp file
+        temp_file.flush()  # Ensure it's written
+
+        # Set the path of this temp file as the GOOGLE_APPLICATION_CREDENTIALS env variable
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = temp_file.name
+else:
+    raise ValueError(
+        "GOOGLE_APPLICATION_CREDENTIALS_JSON environment variable not set."
+    )

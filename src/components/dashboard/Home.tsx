@@ -10,16 +10,18 @@ export type Scenario = {
   first_message: string;
 };
 
+const apiUrl = import.meta.env.VITE_BACKEND_URL;
+
 export default function HomePage() {
   const user_id = localStorage.getItem("user_id");
   const [cardData, setCardData] = useState<Scenario[]>([]);
 
-  async function fetchScenarios() : Promise<Scenario[]> {
+  async function fetchScenarios(): Promise<Scenario[]> {
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/v1/scenarios/${user_id}`);
+      const response = await fetch(`${apiUrl}/api/v1/scenarios/${user_id}`);
       const json = await response.json();
-      const scenarios : Scenario[] = json["scenarios"];
-      return scenarios
+      const scenarios: Scenario[] = json["scenarios"];
+      return scenarios;
     } catch (err) {
       console.error("Error fetching scenario: ", err);
       return [];
@@ -27,12 +29,12 @@ export default function HomePage() {
   }
 
   useEffect(() => {
-    fetchScenarios()
-    .then((scenarios) => { 
+    fetchScenarios().then((scenarios) => {
       console.log(scenarios);
-      setCardData(scenarios)});
-  }, [])
-  
+      setCardData(scenarios);
+    });
+  }, []);
+
   return (
     <div className="min-h-screen w-screen">
       <Navbar />

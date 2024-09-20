@@ -31,6 +31,8 @@ export function readAloud(text: string): void {
   synth.speak(utterance);
 }
 
+const apiUrl = import.meta.env.VITE_BACKEND_URL;
+
 export default function ConversationPage() {
   /** 
   const [searchParams] = useSearchParams();
@@ -95,7 +97,7 @@ export default function ConversationPage() {
       user_text: text,
     };
 
-    const response = await fetch(`http://127.0.0.1:8000/api/v1/text/`, {
+    const response = await fetch(`${apiUrl}/api/v1/text/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -114,7 +116,7 @@ export default function ConversationPage() {
       prev_gpt_message: text,
     };
 
-    const response = await fetch(`http://127.0.0.1:8000/api/v1/get-help/`, {
+    const response = await fetch(`${apiUrl}/api/v1/get-help/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
