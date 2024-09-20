@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import {
   BookOpen,
   Camera,
+  Check,
   Globe2,
   Menu,
   MessageCircle,
@@ -44,6 +45,12 @@ export default function LandingPage() {
           </a>
           <a
             className="text-[#8C52FF] font-medium hover:underline underline-offset-4 hover:text-[#FF3131]"
+            href="#pricing"
+          >
+            Pricing
+          </a>
+          <a
+            className="text-[#8C52FF] font-medium hover:underline underline-offset-4 hover:text-[#FF3131]"
             href="/login"
           >
             Login
@@ -79,6 +86,13 @@ export default function LandingPage() {
                 onClick={toggleMenu}
               >
                 Why SpeakEasy
+              </a>
+              <a
+                className="text-sm font-medium text-white hover:underline underline-offset-4 hover:text-[#FF3131]"
+                href="#pricing"
+                onClick={toggleMenu}
+              >
+                Pricing
               </a>
               <a
                 className="text-sm font-medium text-white hover:underline underline-offset-4 hover:text-[#FF3131]"
@@ -206,7 +220,7 @@ export default function LandingPage() {
           </div>
         </section>
         <section className="w-full pb-12 md:pb-24" id="how-it-works">
-          <div className="flex flex-col space-y-12 px-4 md:px-6">
+          <div className="flex flex-col space-y-12 px-4 md:px-6 lg:px-16">
             <div className="flex flex-col items-center text-center space-y-4">
               <h2 className="text-3xl font-bold sm:text-4xl md:text-5xl text-center">
                 How It Works
@@ -286,6 +300,63 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
+        <section className="w-full pt-12 md:pt-24" id="pricing">
+          <div className="px-4 md:px-6 lg:px-16">
+            <h2 className="text-3xl font-bold sm:text-4xl md:text-5xl text-center mb-8 md:mb-16">
+              Choose Your Plan
+            </h2>
+            <div className="grid gap-6 lg:grid-cols-2">
+              <div className="flex flex-col p-6 bg-white shadow-lg rounded-lg dark:bg-gray-800 border">
+                <h3 className="text-2xl font-bold text-center">Basic</h3>
+                <div className="mt-4 text-center text-gray-600 dark:text-gray-400">
+                  <span className="text-4xl font-bold">Free</span>
+                </div>
+                <ul className="mt-4 space-y-2">
+                  <li className="flex items-center">
+                    <Check className="text-green-500 mr-2 h-5 w-5" />
+                    <span>10 scenarios</span>
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="text-green-500 mr-2 h-5 w-5" />
+                    <span>10 turns of conversation per scenario</span>
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="text-green-500 mr-2 h-5 w-5" />
+                    <span>Basic AI feedback</span>
+                  </li>
+                </ul>
+                <Button className="mt-6" variant="outline">
+                  Get Started
+                </Button>
+              </div>
+              <div className="flex flex-col p-6 bg-white shadow-lg rounded-lg dark:bg-gray-800 border-2 border-primary">
+                <h3 className="text-2xl font-bold text-center">Pro</h3>
+                <div className="mt-4 text-center text-gray-600 dark:text-gray-400">
+                  <span className="text-4xl font-bold">$19.99</span> / month
+                </div>
+                <ul className="mt-4 space-y-2">
+                  <li className="flex items-center">
+                    <Check className="text-green-500 mr-2 h-5 w-5" />
+                    <span>Unlimited scenarios</span>
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="text-green-500 mr-2 h-5 w-5" />
+                    <span>Unlimited turns of conversation</span>
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="text-green-500 mr-2 h-5 w-5" />
+                    <span>Advanced AI feedback</span>
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="text-green-500 mr-2 h-5 w-5" />
+                    <span>Priority customer support</span>
+                  </li>
+                </ul>
+                <Button className="mt-6">Upgrade to Pro</Button>
+              </div>
+            </div>
+          </div>
+        </section>
         <section className="w-full py-12 md:py-24">
           <div className="flex flex-col space-y-12 px-4 md:px-6">
             <div className="flex flex-col items-center space-y-4 text-center">
@@ -293,7 +364,7 @@ export default function LandingPage() {
                 <h2 className="text-3xl font-bold sm:text-4xl md:text-5xl">
                   Join SpeakEasy and start speaking fluently today
                 </h2>
-                <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
+                <p className="mx-auto max-w-[700px] text-gray-500 md:text-2xl dark:text-gray-400">
                   今天开始流利说话!
                 </p>
               </div>
