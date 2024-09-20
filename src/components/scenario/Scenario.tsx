@@ -1,4 +1,4 @@
-import { useSearchParams, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Scenario } from "../dashboard/Home";
 import Navbar from "../navigation/Navbar";
 import { Button } from "../ui/button";
@@ -8,13 +8,15 @@ export default function ScenarioPage() {
   const [searchParams] = useSearchParams();
   const scenario_id = searchParams.get("id");
   */
-  
+
   const location = useLocation();
-  const { scenario } = location.state as { scenario : Scenario };
+  const { scenario } = location.state as { scenario: Scenario };
 
   const navigate = useNavigate();
   function directToConversation() {
-    navigate(`/dashboard/conversation?id=${scenario.scenario_id}`, { state : { scenario }});
+    navigate(`/dashboard/conversation?id=${scenario.scenario_id}`, {
+      state: { scenario },
+    });
   }
   return (
     <div className="min-h-screen w-screen">

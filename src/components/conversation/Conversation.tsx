@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Mic, X } from "lucide-react";
 import { useState } from "react";
-import { useSearchParams, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Scenario } from "../dashboard/Home";
 import Navbar from "../navigation/Navbar";
 import Message from "./Message";
@@ -20,17 +20,16 @@ export type ConversationResponse = {
 export type Suggestion = {
   text: string;
   translated_text: string;
-}
+};
 
-export function readAloud(text : string) : void {
-  const synth : SpeechSynthesis = window.speechSynthesis;
+export function readAloud(text: string): void {
+  const synth: SpeechSynthesis = window.speechSynthesis;
 
   const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'zh-CN';
+  utterance.lang = "zh-CN";
 
   synth.speak(utterance);
 }
-
 
 export default function ConversationPage() {
   /** 
@@ -39,27 +38,31 @@ export default function ConversationPage() {
   */
 
   const location = useLocation();
-  const { scenario } = location.state as { scenario : Scenario };
+  const { scenario } = location.state as { scenario: Scenario };
 
   const [messages, setMessages] = useState<ConversationResponse[]>([
     {
       role: "assistant",
       text: scenario.first_message,
-      translated_text: "Translated text"
+      translated_text: "Translated text",
     },
   ]);
 
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
 
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
   const recognition = new SpeechRecognition();
 
   recognition.lang = "zh-CN";
 
-  recognition.onresult = (event : SpeechRecognitionEvent ) => {
-    const text : string = event.results[0][0].transcript;
+  recognition.onresult = (event: SpeechRecognitionEvent) => {
+    const text: string = event.results[0][0].transcript;
     // add user's text to the conversation
-    setMessages((prevMessages) => [...prevMessages, {role: "user", text: text}]);
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { role: "user", text: text },
+    ]);
 
     // fetch AI's response and add to the conversation
     getResponse(text).then((res) => {
@@ -70,58 +73,56 @@ export default function ConversationPage() {
   };
 
   recognition.onerror = (event) => {
-    if (event.error === 'no-speech') {
-      console.log('No speech detected.');
+    if (event.error === "no-speech") {
+      console.log("No speech detected.");
     } else {
-      console.error('Speech recognition error: ', event.error);
+      console.error("Speech recognition error: ", event.error);
     }
   };
 
   function handleRecord() {
     recognition.start();
-  };
+  }
 
-  function showSuggestions(text: string): void{
+  function showSuggestions(text: string): void {
     getSuggestions(text).then((suggestions) => setSuggestions(suggestions));
-  };
+  }
 
   async function getResponse(text: string): Promise<ConversationResponse> {
     const body = {
-      user_id : localStorage.getItem("user_id"),
-      scenario_id : scenario.scenario_id,
-      user_text : text
+      user_id: localStorage.getItem("user_id"),
+      scenario_id: scenario.scenario_id,
+      user_text: text,
     };
 
-    const response = await fetch(`http://127.0.0.1:8000/api/v1/text/`, 
-      { 
-        method:'POST',   
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
-      });
+    const response = await fetch(`http://127.0.0.1:8000/api/v1/text/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
     const json = await response.json();
-    const msg : ConversationResponse = {...json, role : "assistant"};
+    const msg: ConversationResponse = { ...json, role: "assistant" };
     return msg;
-  };
+  }
 
   async function getSuggestions(text: string): Promise<Suggestion[]> {
     const body = {
-      user_id : localStorage.getItem("user_id"),
-      scenario_id : scenario.scenario_id,
-      prev_gpt_message : text
+      user_id: localStorage.getItem("user_id"),
+      scenario_id: scenario.scenario_id,
+      prev_gpt_message: text,
     };
 
-    const response = await fetch(`http://127.0.0.1:8000/api/v1/get-help/`, 
-      { 
-        method:'POST',   
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
-      });
+    const response = await fetch(`http://127.0.0.1:8000/api/v1/get-help/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
     const res = await response.json();
-    const suggestions : Suggestion[] = res["suggestions"];
+    const suggestions: Suggestion[] = res["suggestions"];
     return suggestions;
   }
 
@@ -140,7 +141,11 @@ export default function ConversationPage() {
                       message.role === "assistant" ? "flex-start" : "flex-end",
                   }}
                 >
-                  <Message key={index} message={message} showSuggestions={showSuggestions}/>
+                  <Message
+                    key={index}
+                    message={message}
+                    showSuggestions={showSuggestions}
+                  />
                 </div>
               ))}
             </CardContent>
@@ -162,16 +167,14 @@ export default function ConversationPage() {
             <CardContent className="flex-1 space-y-4 overflow-y-auto">
               <div className="flex flex-col space-y-2 text-left">
                 <h2 className="text-xl font-semibold">{scenario.name}</h2>
-                <p className="mb-4">
-                  {scenario.context}
-                </p>
+                <p className="mb-4">{scenario.context}</p>
               </div>
               <Separator />
               <div className="flex flex-col space-y-2 text-left">
                 <h3 className="text-lg font-semibold">Suggested Replies</h3>
                 <div className="space-y-4">
                   {suggestions.map((suggestion, index) => (
-                    <SuggestedReply key={index} message={suggestion}/>
+                    <SuggestedReply key={index} message={suggestion} />
                   ))}
                 </div>
               </div>
