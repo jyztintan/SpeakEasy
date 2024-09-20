@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { HelpCircle, Languages, Volume2 } from "lucide-react";
-import { ConversationResponse } from "./Conversation";
+import { ConversationResponse, readAloud } from "./Conversation";
 
 export default function Message({
-  message,
+  message, showSuggestions
 }: {
-  message: ConversationResponse;
+  message: ConversationResponse; showSuggestions: (text: string) => void
 }) {
   return (
     <Card className="max-w-[425px]">
@@ -25,6 +25,7 @@ export default function Message({
               className="flex items-center space-x-2"
               size="sm"
               variant="secondary"
+              onClick={() => readAloud(message.text)}
             >
               <Volume2 className="w-4 h-4 mr-1" />
               Read Aloud
@@ -33,6 +34,7 @@ export default function Message({
               className="flex items-center space-x-2"
               size="sm"
               variant="secondary"
+              onClick={() => showSuggestions(message.text)}
             >
               <HelpCircle className="w-4 h-4 mr-1" />
               Get Help

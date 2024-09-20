@@ -17,6 +17,21 @@ export type ConversationResponse = {
   score?: number;
 };
 
+export type Suggestion = {
+  text: string;
+  translated_text: string;
+}
+
+export function readAloud(text : string) : void {
+  const synth : SpeechSynthesis = window.speechSynthesis;
+
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'zh-CN';
+
+  synth.speak(utterance);
+}
+
+
 export default function ConversationPage() {
   /** 
   const [searchParams] = useSearchParams();
@@ -32,49 +47,84 @@ export default function ConversationPage() {
       text: scenario.first_message,
       translated_text: "Translated text"
     },
-    /**
-    {
-      role: "user",
-      text: "我想找一些提高生产力的建议。",
-    },
-    {
-      role: "assistant",
-      text: "当然！一个不错的建议是把任务分解成小块，一次完成一个。你试过这样做吗？",
-      translated_text:
-        "Sure! One good tip is to break your tasks into smaller chunks and tackle them one at a time. Have you tried that?",
-      feedback: "positive",
-      score: 4.5,
-    },
-    {
-      role: "user",
-      text: "是的，我以前试过，但有时还是会感到不知所措。",
-    },
-    {
-      role: "assistant",
-      text: "当然！一个不错的建议是把任务分解成小块，一次完成一个。你试过这样做吗？",
-      translated_text:
-        "Sure! One good tip is to break your tasks into smaller chunks and tackle them one at a time. Have you tried that?",
-      feedback: "positive",
-      score: 4.5,
-    },
-    {
-      role: "user",
-      text: "是的，我以前试过，但有时还是会感到不知所措。",
-    },
-    {
-      role: "assistant",
-      text: "当然！一个不错的建议是把任务分解成小块，一次完成一个。你试过这样做吗？",
-      translated_text:
-        "Sure! One good tip is to break your tasks into smaller chunks and tackle them one at a time. Have you tried that?",
-      feedback: "positive",
-      score: 4.5,
-    },
-    {
-      role: "user",
-      text: "是的，我以前试过，但有时还是会感到不知所措。",
-    },
-    */
   ]);
+
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const recognition = new SpeechRecognition();
+
+  recognition.lang = "zh-CN";
+
+  recognition.onresult = (event : SpeechRecognitionEvent ) => {
+    const text : string = event.results[0][0].transcript;
+    // add user's text to the conversation
+    setMessages((prevMessages) => [...prevMessages, {role: "user", text: text}]);
+
+    // fetch AI's response and add to the conversation
+    getResponse(text).then((res) => {
+      setMessages((prevMessages) => [...prevMessages, res]);
+      readAloud(res.text);
+      setSuggestions([]);
+    });
+  };
+
+  recognition.onerror = (event) => {
+    if (event.error === 'no-speech') {
+      console.log('No speech detected.');
+    } else {
+      console.error('Speech recognition error: ', event.error);
+    }
+  };
+
+  function handleRecord() {
+    recognition.start();
+  };
+
+  function showSuggestions(text: string): void{
+    getSuggestions(text).then((suggestions) => setSuggestions(suggestions));
+  };
+
+  async function getResponse(text: string): Promise<ConversationResponse> {
+    const body = {
+      user_id : localStorage.getItem("user_id"),
+      scenario_id : scenario.scenario_id,
+      user_text : text
+    };
+
+    const response = await fetch(`http://127.0.0.1:8000/api/v1/text/`, 
+      { 
+        method:'POST',   
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      });
+    const json = await response.json();
+    const msg : ConversationResponse = {...json, role : "assistant"};
+    return msg;
+  };
+
+  async function getSuggestions(text: string): Promise<Suggestion[]> {
+    const body = {
+      user_id : localStorage.getItem("user_id"),
+      scenario_id : scenario.scenario_id,
+      prev_gpt_message : text
+    };
+
+    const response = await fetch(`http://127.0.0.1:8000/api/v1/get-help/`, 
+      { 
+        method:'POST',   
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      });
+    const res = await response.json();
+    const suggestions : Suggestion[] = res["suggestions"];
+    return suggestions;
+  }
+
   return (
     <div className="h-screen w-screen">
       <Navbar />
@@ -90,12 +140,12 @@ export default function ConversationPage() {
                       message.role === "assistant" ? "flex-start" : "flex-end",
                   }}
                 >
-                  <Message key={index} message={message} />
+                  <Message key={index} message={message} showSuggestions={showSuggestions}/>
                 </div>
               ))}
             </CardContent>
             <div className="flex basis-1/12 space-x-4 py-4">
-              <Button className="size-12 rounded-full">
+              <Button className="size-12 rounded-full" onClick={handleRecord}>
                 <Mic size={16} />
               </Button>
               <Button variant="secondary" className="size-12 rounded-full">
@@ -120,8 +170,8 @@ export default function ConversationPage() {
               <div className="flex flex-col space-y-2 text-left">
                 <h3 className="text-lg font-semibold">Suggested Replies</h3>
                 <div className="space-y-4">
-                  {[1, 2, 3, 4].map((_, index) => (
-                    <SuggestedReply key={index} />
+                  {suggestions.map((suggestion, index) => (
+                    <SuggestedReply key={index} message={suggestion}/>
                   ))}
                 </div>
               </div>
