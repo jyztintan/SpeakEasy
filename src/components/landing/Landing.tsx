@@ -17,12 +17,12 @@ export default function LandingPage() {
   return (
     <div className="flex flex-col min-h-screen w-screen">
       <header className="px-4 lg:px-6 h-14 pt-4 flex items-center">
-        <a className="flex items-center justify-center" href="#">
+        <div>
           <a href="/" className="text-2xl font-bold">
             <img src="/logo.svg" alt="logo" className="h-10" />
           </a>
           <span className="sr-only">SpeakEasy</span>
-        </a>
+        </div>
         <nav className="hidden ml-auto md:flex gap-4 sm:gap-6">
           <a
             className="text-[#8C52FF] font-medium hover:underline underline-offset-4 hover:text-[#FF3131]"
