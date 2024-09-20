@@ -2,12 +2,19 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { HelpCircle, Languages, Volume2 } from "lucide-react";
 import { ConversationResponse, readAloud } from "./Conversation";
+import { useState } from 'react';
 
 export default function Message({
   message, showSuggestions
 }: {
   message: ConversationResponse; showSuggestions: (text: string) => void
 }) {
+  const [textDisplay, setTextDisplay] = useState<string>(message.text);
+
+  function toggleTranslation() : void {
+    setTextDisplay(textDisplay == message.text ? (message.translated_text as string) : message.text);
+  }
+
   return (
     <Card className="max-w-[425px]">
       <CardContent className="p-4 text-left">
@@ -17,6 +24,7 @@ export default function Message({
               className="flex items-center space-x-2"
               size="sm"
               variant="secondary"
+              onClick={toggleTranslation}
             >
               <Languages className="w-4 h-4 mr-1" />
               See Translation
@@ -41,7 +49,7 @@ export default function Message({
             </Button>
           </div>
         )}
-        <p>{message.text}</p>
+        <p>{textDisplay}</p>
       </CardContent>
     </Card>
   );
