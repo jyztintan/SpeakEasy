@@ -22,7 +22,7 @@ class Conversation(models.Model):
 
 
 class LLMResponse(models.Model):
-    text_response = models.CharField(max_length=100000)
+    text = models.CharField(max_length=100000)
     feedback = models.CharField(max_length=10000)
     translated_text = models.CharField(max_length=100000)
     score = models.IntegerField()

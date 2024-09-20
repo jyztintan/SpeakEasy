@@ -67,7 +67,7 @@ def generate_openai_response(user_text):
             User Input: "{user_text}"
 
             Requirements:
-            - "text_response": A meaningful and contextually appropriate response to the user's input in Chinese.
+            - "text": A meaningful and contextually appropriate response to the user's input in Chinese.
             - "feedback": Constructive feedback on the user's input, 
             highlighting strengths and areas for improvement in English.
             - "translated_text": Translation of the appropriate text_response in English.
@@ -139,6 +139,15 @@ def generate_openai_suggestions(prev_message):
             - "third": A third meaningful and contextually appropriate response to the Previous Input in Chinese.
             - "third_en": A direct translation of the third suggestion in English.
 
+            return a list of dictionaries
+	            eg. dict(
+                "suggestions": 
+                    [
+                        dict("text": first, "translated_text": first_en),
+                        dict("text": second, "translated_text": second_en),
+                        dict("text": third, "translated_text": third_en)
+                    ]
+                )
             Ensure the response is in valid JSON format with the exact field names specified.
             """
     messages = [

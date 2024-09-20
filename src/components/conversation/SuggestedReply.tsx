@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Languages, Volume2 } from "lucide-react";
+import { Suggestion, readAloud } from "./Conversation";
 
-export default function SuggestedReply() {
+export default function SuggestedReply({message} : {message : Suggestion}) {
   return (
     <Card>
       <CardContent className="p-4">
@@ -19,13 +20,14 @@ export default function SuggestedReply() {
             className="flex items-center space-x-2"
             size="sm"
             variant="secondary"
+            onClick={() => readAloud(message.text)}
           >
             <Volume2 size={12} />
             <span>Read Aloud</span>
           </Button>
         </div>
         <p>
-          Ad consequuntur sunt aut sunt. Ipsam voluptas quis necessitatibus.
+          {message.text}
         </p>
       </CardContent>
     </Card>
