@@ -1,48 +1,68 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { CredentialResponse, googleLogout } from "@react-oauth/google";
-
 import { ReactNode } from "react";
+import {
+  auth,
+  provider,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged,
+} from "./config";
 
 type userAuthType = {
-  user: string;
-  setUser: (user: string) => void;
+  user: any;
+  setUser: (user: any) => void;
   logOut: () => void;
-  logIn: (response: CredentialResponse) => void;
+  logIn: () => Promise<void>;
 };
 
 const UserAuthContext = createContext<userAuthType>({
-  user: "",
+  user: null,
   setUser: () => {},
   logOut: () => {},
-  logIn: () => {},
+  logIn: async () => {},
 });
 
 export function UserAuthContextProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState<any>(null);
 
-  const logIn = (response: CredentialResponse) => {
-    // console.log(response);
-    const credential = JSON.stringify(response.credential);
-    localStorage.setItem("SpeakEasyUser", credential);
-    localStorage.setItem("user_id", "test_api_user"); // for testing purpose
-    setUser(credential);
+  const logIn = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      localStorage.setItem("SpeakEasyUser", JSON.stringify(user));
+      setUser(user);
+    } catch (error) {
+      console.error("Login failed", error);
+    }
   };
 
-  const logOut = () => {
-    googleLogout();
-    setUser("");
-    localStorage.removeItem("SpeakEasyUser");
+  const logOut = async () => {
+    try {
+      await signOut(auth);
+      setUser(null);
+      localStorage.removeItem("SpeakEasyUser");
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
   };
 
+  // Check for user session on mount
   useEffect(() => {
-    const checkUserSession = () => {
-      const storedUser = localStorage.getItem("SpeakEasyUser");
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-      }
-    };
+    const storedUser = localStorage.getItem("SpeakEasyUser");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
 
-    checkUserSession();
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
+        localStorage.setItem("SpeakEasyUser", JSON.stringify(firebaseUser));
+        setUser(firebaseUser);
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => unsubscribe(); // Clean up the listener on unmount
   }, []);
 
   return (
