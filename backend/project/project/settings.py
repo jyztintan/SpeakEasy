@@ -60,6 +60,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # React frontend
+    "https://speakeasy-speakfreely.netlify.app",
 ]
 
 ROOT_URLCONF = "project.urls"
