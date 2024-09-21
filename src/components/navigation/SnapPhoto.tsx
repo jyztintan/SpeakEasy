@@ -21,9 +21,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Camera } from "lucide-react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { FetchScenariosContext } from "../dashboard/Home";
 
 const formSchema = z.object({
   image: z
@@ -43,7 +44,11 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+const apiUrl = import.meta.env.VITE_BACKEND_URL;
+
 export default function SnapPhoto({ isMobile }: { isMobile: boolean }) {
+  const user = JSON.parse(localStorage.getItem("SpeakEasyUser") as string);
+  const user_id = user["uid"];
   const [open, setOpen] = useState(false);
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -51,10 +56,26 @@ export default function SnapPhoto({ isMobile }: { isMobile: boolean }) {
       context: "",
     },
   });
+  const fetchScenarios = useContext(FetchScenariosContext);
 
-  const onSubmit = (data: FormValues) => {
-    // TODO: Make POST call to API
-    console.log(data);
+  const onSubmit = async (data: FormValues) => {
+    const formData = new FormData();
+
+    formData.append('user_id', user_id);
+    formData.append('name', "test_name"); // TODO: add a textbox for users to insert name
+    formData.append('image', data.image[0]);
+    formData.append('context', data.context);
+
+    try {
+      const response = await fetch(`${apiUrl}/api/v1/scenarios/`, {
+        method: 'POST',
+        body: formData, 
+      });
+      await response.json(); // wait for backend to return
+    } catch (error) {
+      console.error('Error:', error);
+    }
+    fetchScenarios();
     setOpen(false);
   };
 
