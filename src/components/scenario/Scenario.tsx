@@ -27,7 +27,7 @@ Choose from Suggestions: If you're unsure how to reply, we provide helpful sugge
 
 Access Translation: If you need a little help, tap the Translate button to view the translation of the conversation in your native language.
 
-Learn from Feedback: At the end of the conversation, our AI will highlight any language improvements. TODO add more here
+Learn from Feedback: At the end of the conversation, our AI will highlight any language improvements.
 
 Have Fun: This is your space to explore and practice! Don’t worry about making mistakes, we are here to help you learn.
 `;
