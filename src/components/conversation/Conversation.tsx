@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { apiUrl } from "@/main";
 import { Mic, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Scenario } from "../dashboard/Home";
-import { apiUrl } from "@/main";
 import Navbar from "../navigation/Navbar";
 import Message from "./Message";
 import SuggestedReply from "./SuggestedReply";
@@ -39,6 +39,7 @@ export default function ConversationPage() {
   const location = useLocation();
   const { scenario } = location.state as { scenario: Scenario };
 
+  const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<ConversationResponse[]>([
     {
       role: "assistant",
@@ -51,6 +52,10 @@ export default function ConversationPage() {
 
   const SpeechRecognition =
     window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    // For Firefox browser
+    alert("Speech recognition is not supported in this browser.");
+  }
   const recognition = new SpeechRecognition();
 
   recognition.lang = "zh-CN";
@@ -83,11 +88,8 @@ export default function ConversationPage() {
     recognition.start();
   }
 
-  function showSuggestions(text: string): void {
-    getSuggestions(text).then((suggestions) => setSuggestions(suggestions));
-  }
-
   async function getResponse(text: string): Promise<ConversationResponse> {
+    setIsLoading(true);
     const body = {
       user_id: user_id,
       scenario_id: scenario.scenario_id,
@@ -103,10 +105,11 @@ export default function ConversationPage() {
     });
     const json = await response.json();
     const msg: ConversationResponse = { ...json, role: "assistant" };
+    setIsLoading(false);
     return msg;
   }
 
-  async function getSuggestions(text: string): Promise<Suggestion[]> {
+  async function getSuggestions(text: string): Promise<void> {
     const body = {
       user_id: user_id,
       scenario_id: scenario.scenario_id,
@@ -122,7 +125,7 @@ export default function ConversationPage() {
     });
     const res = await response.json();
     const suggestions: Suggestion[] = res["suggestions"];
-    return suggestions;
+    setSuggestions(suggestions);
   }
 
   // might be called twice in dev mode, but only once in prod mode due to StrictMode,
@@ -149,10 +152,18 @@ export default function ConversationPage() {
                   <Message
                     key={index}
                     message={message}
-                    showSuggestions={showSuggestions}
+                    getSuggestions={getSuggestions}
                   />
                 </div>
               ))}
+              {isLoading && (
+                <div className="flex space-x-1 items-center">
+                  <span className="sr-only">Loading...</span>
+                  <div className="size-2 bg-black rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                  <div className="size-2 bg-black rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                  <div className="size-2 bg-black rounded-full animate-bounce"></div>
+                </div>
+              )}
             </CardContent>
             <div className="flex basis-1/12 space-x-4 py-4">
               <Button className="size-12 rounded-full" onClick={handleRecord}>

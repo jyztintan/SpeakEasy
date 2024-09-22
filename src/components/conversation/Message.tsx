@@ -1,18 +1,25 @@
-import { Button } from "@/components/ui/button";
+import { Button, LoadingButton } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { HelpCircle, Languages, Volume2 } from "lucide-react";
+import { useState } from "react";
 import { ConversationResponse, readAloud } from "./Conversation";
-import { useState } from 'react';
 
 export default function Message({
-  message, showSuggestions
+  message,
+  getSuggestions,
 }: {
-  message: ConversationResponse; showSuggestions: (text: string) => void
+  message: ConversationResponse;
+  getSuggestions: (text: string) => Promise<void>;
 }) {
   const [textDisplay, setTextDisplay] = useState<string>(message.text);
+  const [isLoading, setIsLoading] = useState(false);
 
-  function toggleTranslation() : void {
-    setTextDisplay(textDisplay == message.text ? (message.translated_text as string) : message.text);
+  function toggleTranslation(): void {
+    setTextDisplay(
+      textDisplay == message.text
+        ? (message.translated_text as string)
+        : message.text
+    );
   }
 
   return (
@@ -38,15 +45,20 @@ export default function Message({
               <Volume2 className="w-4 h-4 mr-1" />
               Read Aloud
             </Button>
-            <Button
+            <LoadingButton
               className="flex items-center space-x-2"
               size="sm"
               variant="secondary"
-              onClick={() => showSuggestions(message.text)}
+              onClick={async () => {
+                setIsLoading(true);
+                await getSuggestions(message.text);
+                setIsLoading(false);
+              }}
+              loading={isLoading}
             >
-              <HelpCircle className="w-4 h-4 mr-1" />
+              {isLoading || <HelpCircle className="w-4 h-4 mr-1" />}
               Get Help
-            </Button>
+            </LoadingButton>
           </div>
         )}
         <p>{textDisplay}</p>

@@ -13,15 +13,15 @@ export default function LanguageCard({ scenario }: { scenario: Scenario }) {
 
   return (
     <div onClick={directToScenario}>
-      <Card>
+      <Card className="pb-4">
         <div className="overflow-hidden">
           <img
             src={scenario.image}
             alt="Thumbnail"
-            className="w-full h-48 object-cover"
+            className="w-full h-48 object-cover rounded-t-lg"
           />
         </div>
-        <CardContent className="h-24 p-4 text-left overflow-auto">
+        <CardContent className="h-28 p-4 pb-0 text-left overflow-auto">
           <h2 className="text-xl font-semibold mb-1">{scenario.name}</h2>
           <p className="text-sm text-muted-foreground">{scenario.context}</p>
         </CardContent>
