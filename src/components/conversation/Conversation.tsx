@@ -2,9 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Mic, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Scenario } from "../dashboard/Home";
+import { apiUrl } from "@/main";
 import Navbar from "../navigation/Navbar";
 import Message from "./Message";
 import SuggestedReply from "./SuggestedReply";
@@ -31,13 +32,9 @@ export function readAloud(text: string): void {
   synth.speak(utterance);
 }
 
-const apiUrl = import.meta.env.VITE_BACKEND_URL;
-
 export default function ConversationPage() {
-  /** 
-  const [searchParams] = useSearchParams();
-  const scenario_id = searchParams.get("id");
-  */
+  const user = JSON.parse(localStorage.getItem("SpeakEasyUser") as string);
+  const user_id = user["uid"];
 
   const location = useLocation();
   const { scenario } = location.state as { scenario: Scenario };
@@ -92,7 +89,7 @@ export default function ConversationPage() {
 
   async function getResponse(text: string): Promise<ConversationResponse> {
     const body = {
-      user_id: localStorage.getItem("user_id"),
+      user_id: user_id,
       scenario_id: scenario.scenario_id,
       user_text: text,
     };
@@ -111,7 +108,7 @@ export default function ConversationPage() {
 
   async function getSuggestions(text: string): Promise<Suggestion[]> {
     const body = {
-      user_id: localStorage.getItem("user_id"),
+      user_id: user_id,
       scenario_id: scenario.scenario_id,
       prev_gpt_message: text,
     };
@@ -127,6 +124,12 @@ export default function ConversationPage() {
     const suggestions: Suggestion[] = res["suggestions"];
     return suggestions;
   }
+
+  // might be called twice in dev mode, but only once in prod mode due to StrictMode,
+  // read here: https://www.dhiwise.com/post/resolving-useeffect-running-twice-a-comprehensive-guide
+  useEffect(() => {
+    readAloud(messages[0]["text"]);
+  }, []);
 
   return (
     <div className="h-screen w-screen">
