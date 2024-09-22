@@ -1,6 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Mic, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -164,11 +172,22 @@ export default function ConversationPage() {
             </div>
           </Card>
           <Card className="flex flex-col basis-2/5 space-y-4 pb-6">
-            <img
-              src={scenario.image}
-              alt="Scenario Image"
-              className="rounded-t-lg h-48 object-cover"
-            />
+            <Dialog>
+              <DialogTrigger asChild>
+                <img
+                  src={scenario.image}
+                  alt="Scenario Image"
+                  className="rounded-t-lg h-48 object-cover hover:cursor-pointer"
+                />
+              </DialogTrigger>
+              <DialogContent>
+                <img
+                  src={scenario.image}
+                  alt="Scenario Image"
+                  className="rounded-t-lg hover:cursor-pointer p-10"
+                />
+              </DialogContent>
+            </Dialog>
             <CardContent className="flex-1 space-y-4 overflow-y-auto">
               <div className="flex flex-col space-y-2 text-left">
                 <h2 className="text-xl font-semibold">{scenario.name}</h2>
