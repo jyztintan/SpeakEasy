@@ -3,26 +3,35 @@ import path from "path";
 import { defineConfig } from "vite";
 import type { Options } from "vite-plugin-open-graph";
 import ogPlugin from "vite-plugin-open-graph";
+import { VitePluginRadar } from "vite-plugin-radar";
 
 const ogOptions: Options = {
   basic: {
-    url: "https://example.com/", // TODO: replace when app is deployed
+    url: "https://speakeasy-speakfreely.netlify.app/",
     title: "SpeakEasy • Speak Freely",
     type: "image.png",
-    image: "https://placehold.co/1200x630", // TODO: replace with ogp.jpg
+    image: "https://speakeasy-speakfreely.netlify.app/ogp.jpg",
     determiner: "auto",
     description:
       "Immerse yourself in real-world language learning with dynamic, AI-driven conversations tailored to your skill level and interests. Practice speaking confidently in any scenario, anytime.",
     siteName: "SpeakEasy • Speak Freely",
   },
   twitter: {
-    image: "https://placehold.co/1200x630",
+    image: "https://speakeasy-speakfreely.netlify.app/ogp.jpg",
     imageAlt: "logo",
   },
 };
 
 export default defineConfig({
-  plugins: [react(), ogPlugin(ogOptions)],
+  plugins: [
+    react(),
+    ogPlugin(ogOptions),
+    VitePluginRadar({
+      analytics: {
+        id: "G-2EFH93KCYW",
+      },
+    }),
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
