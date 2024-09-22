@@ -27,7 +27,12 @@ export default function Message({
   }
 
   return (
-    <Card className="max-w-[425px]">
+    <Card
+      className="max-w-[425px] border-0"
+      style={{
+        backgroundColor: message.role === "assistant" ? "#FBF9FF" : "#FFF8F8",
+      }}
+    >
       <CardContent className="p-4 text-left">
         {message.role === "assistant" && !isEnded && (
           <div className="flex space-x-2 mb-2">
