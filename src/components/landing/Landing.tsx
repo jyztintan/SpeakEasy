@@ -305,54 +305,102 @@ export default function LandingPage() {
             <h2 className="text-3xl font-bold sm:text-4xl md:text-5xl text-center mb-8 md:mb-16">
               Choose Your Plan
             </h2>
-            <div className="grid gap-6 lg:grid-cols-2">
-              <div className="flex flex-col p-6 bg-white shadow-lg rounded-lg dark:bg-gray-800 border">
-                <h3 className="text-2xl font-bold text-center">Basic</h3>
-                <div className="mt-4 text-center text-gray-600 dark:text-gray-400">
-                  <span className="text-4xl font-bold">Free</span>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+              <div className="flex flex-col justify-between space-y-8 p-6 bg-white shadow-lg rounded-lg dark:bg-gray-800">
+                <div className="flex flex-col">
+                  <h3 className="text-2xl font-bold text-center">Free</h3>
+                  <div className="mt-4 text-center text-gray-600 dark:text-gray-400">
+                    <span className="text-4xl font-bold">$0</span> / month
+                  </div>
+                  <ul className="mt-4 space-y-2 text-left">
+                    <li className="flex items-start">
+                      <Check className="text-green-500 mr-2 h-5 w-5" />
+                      <span>Limited access to basic scenarios</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Check className="text-green-500 mr-2 h-5 w-5" />
+                      <span>2 scenario generations per day</span>
+                    </li>
+                  </ul>
                 </div>
-                <ul className="mt-4 space-y-2">
-                  <li className="flex items-center">
-                    <Check className="text-green-500 mr-2 h-5 w-5" />
-                    <span>10 scenarios</span>
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="text-green-500 mr-2 h-5 w-5" />
-                    <span>10 turns of conversation per scenario</span>
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="text-green-500 mr-2 h-5 w-5" />
-                    <span>Basic AI feedback</span>
-                  </li>
-                </ul>
-                <Button className="mt-6" variant="outline">
-                  Get Started
-                </Button>
+                <Button variant="outline">Get Started</Button>
               </div>
-              <div className="flex flex-col p-6 bg-white shadow-lg rounded-lg dark:bg-gray-800 border-2 border-primary">
-                <h3 className="text-2xl font-bold text-center">Pro</h3>
-                <div className="mt-4 text-center text-gray-600 dark:text-gray-400">
-                  <span className="text-4xl font-bold">$19.99</span> / month
+              <div className="flex flex-col justify-between space-y-8 p-6 bg-white shadow-lg rounded-lg dark:bg-gray-800">
+                <div className="flex flex-col">
+                  <h3 className="text-2xl font-bold text-center">Standard</h3>
+                  <div className="mt-4 text-center text-gray-600 dark:text-gray-400">
+                    <span className="text-4xl font-bold">$9.99</span> / month
+                  </div>
+                  <ul className="mt-4 space-y-2 text-left">
+                    <li className="flex items-start">
+                      <Check className="text-green-500 mr-2 h-5 w-5" />
+                      <span>Access to wider range of scenarios</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Check className="text-green-500 mr-2 h-5 w-5" />
+                      <span>10 scenario generations per day</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Check className="text-green-500 mr-2 h-5 w-5" />
+                      <span>More frequent practice sessions</span>
+                    </li>
+                  </ul>
                 </div>
-                <ul className="mt-4 space-y-2">
-                  <li className="flex items-center">
-                    <Check className="text-green-500 mr-2 h-5 w-5" />
-                    <span>Unlimited scenarios</span>
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="text-green-500 mr-2 h-5 w-5" />
-                    <span>Unlimited turns of conversation</span>
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="text-green-500 mr-2 h-5 w-5" />
-                    <span>Advanced AI feedback</span>
-                  </li>
-                  <li className="flex items-center">
-                    <Check className="text-green-500 mr-2 h-5 w-5" />
-                    <span>Priority customer support</span>
-                  </li>
-                </ul>
-                <Button className="mt-6">Upgrade to Pro</Button>
+                <Button>Choose Standard</Button>
+              </div>
+              <div className="flex flex-col justify-between space-y-8 p-6 bg-white shadow-lg rounded-lg dark:bg-gray-800 border-2 border-primary">
+                <div className="flex flex-col">
+                  <h3 className="text-2xl font-bold text-center">Premium</h3>
+                  <div className="mt-4 text-center text-gray-600 dark:text-gray-400">
+                    <span className="text-4xl font-bold">$19.99</span> / month
+                  </div>
+                  <ul className="mt-4 space-y-2 text-left">
+                    <li className="flex items-start">
+                      <Check className="text-green-500 mr-2 h-5 w-5" />
+                      <span>Unlimited access to all scenarios</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Check className="text-green-500 mr-2 h-5 w-5" />
+                      <span>Unlimited scenario generations</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Check className="text-green-500 mr-2 h-5 w-5" />
+                      <span>Priority for new content and languages</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Check className="text-green-500 mr-2 h-5 w-5" />
+                      <span>Advanced pronunciation analysis</span>
+                    </li>
+                  </ul>
+                </div>
+                <Button>Choose Premium</Button>
+              </div>
+              <div className="flex flex-col justify-between space-y-8 p-6 bg-white shadow-lg rounded-lg dark:bg-gray-800">
+                <div className="flex flex-col">
+                  <h3 className="text-2xl font-bold text-center">Enterprise</h3>
+                  <div className="mt-4 text-center text-gray-600 dark:text-gray-400">
+                    <span className="text-4xl font-bold">Custom</span>
+                  </div>
+                  <ul className="mt-4 space-y-2 text-left">
+                    <li className="flex items-start">
+                      <Check className="text-green-500 mr-2 h-5 w-5" />
+                      <span>All Premium features</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Check className="text-green-500 mr-2 h-5 w-5" />
+                      <span>Progress tracking</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Check className="text-green-500 mr-2 h-5 w-5" />
+                      <span>Custom scenario creation</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Check className="text-green-500 mr-2 h-5 w-5" />
+                      <span>Tailored for schools or companies</span>
+                    </li>
+                  </ul>
+                </div>
+                <Button variant="outline">Contact Sales</Button>
               </div>
             </div>
           </div>
