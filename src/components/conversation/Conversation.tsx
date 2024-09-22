@@ -1,10 +1,11 @@
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { apiUrl } from "@/main";
 import { Mic, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Scenario } from "../dashboard/Home";
 import Navbar from "../navigation/Navbar";
 import Message from "./Message";
@@ -33,12 +34,14 @@ export function readAloud(text: string): void {
 }
 
 export default function ConversationPage() {
+  const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("SpeakEasyUser") as string);
   const user_id = user["uid"];
 
   const location = useLocation();
   const { scenario } = location.state as { scenario: Scenario };
 
+  const [isEnded, setIsEnded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<ConversationResponse[]>([
     {
@@ -47,8 +50,8 @@ export default function ConversationPage() {
       translated_text: "Translated text",
     },
   ]);
-
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [commentIdx, setCommentIdx] = useState(0);
 
   const SpeechRecognition =
     window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -152,7 +155,11 @@ export default function ConversationPage() {
                   <Message
                     key={index}
                     message={message}
+                    isEnded={isEnded}
                     getSuggestions={getSuggestions}
+                    showComment={() => {
+                      setCommentIdx(index);
+                    }}
                   />
                 </div>
               ))}
@@ -165,14 +172,26 @@ export default function ConversationPage() {
                 </div>
               )}
             </CardContent>
-            <div className="flex basis-1/12 space-x-4 py-4">
-              <Button className="size-12 rounded-full" onClick={handleRecord}>
-                <Mic size={16} />
-              </Button>
-              <Button variant="secondary" className="size-12 rounded-full">
-                <X size={16} />
-              </Button>
-            </div>
+            {isEnded ? (
+              <div className="py-4">
+                <Button onClick={() => navigate("/dashboard")}>
+                  Return Back
+                </Button>
+              </div>
+            ) : (
+              <div className="flex basis-1/12 space-x-4 py-4">
+                <Button className="size-12 rounded-full" onClick={handleRecord}>
+                  <Mic size={16} />
+                </Button>
+                <Button
+                  variant="secondary"
+                  className="size-12 rounded-full"
+                  onClick={() => setIsEnded(true)}
+                >
+                  <X size={16} />
+                </Button>
+              </div>
+            )}
           </Card>
           <Card className="flex flex-col basis-2/5 space-y-4 pb-6">
             <img
@@ -186,14 +205,48 @@ export default function ConversationPage() {
                 <p className="mb-4">{scenario.context}</p>
               </div>
               <Separator />
-              <div className="flex flex-col space-y-2 text-left">
-                <h3 className="text-lg font-semibold">Suggested Replies</h3>
-                <div className="space-y-4">
-                  {suggestions.map((suggestion, index) => (
-                    <SuggestedReply key={index} message={suggestion} />
-                  ))}
+              {isEnded ? (
+                <div className="flex flex-col space-y-2 text-left">
+                  <h3 className="text-lg font-semibold">
+                    Conversation Feedback
+                  </h3>
+                  <div className="flex space-x-8">
+                    <p>Average Score</p>
+                    <Badge>
+                      {Math.round(
+                        messages.reduce((prev, curr) => {
+                          if (curr.score) {
+                            return curr.score + prev;
+                          } else {
+                            return prev;
+                          }
+                        }, 0) /
+                          (messages.length / 2)
+                      )} / 100
+                    </Badge>
+                  </div>
+                  <h4 className="font-semibold mt-4">Individual Comment</h4>
+                  {commentIdx % 2 === 1 ? (
+                    <div className="space-y-2">
+                      <p className="italic text-sm">
+                        "{messages[commentIdx].text}"
+                      </p>
+                      <p>{messages[commentIdx + 1].feedback}</p>
+                    </div>
+                  ) : (
+                    <p>Click on a message to show feedback</p>
+                  )}
                 </div>
-              </div>
+              ) : (
+                <div className="flex flex-col space-y-2 text-left">
+                  <h3 className="text-lg font-semibold">Suggested Replies</h3>
+                  <div className="space-y-4">
+                    {suggestions.map((suggestion, index) => (
+                      <SuggestedReply key={index} message={suggestion} />
+                    ))}
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
