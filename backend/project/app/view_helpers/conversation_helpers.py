@@ -16,7 +16,7 @@ load_dotenv()  # Need to call to load env variables
 API_KEY = os.getenv('OPENAI_API_KEY')
 MODEL = "gpt-4o-mini"
 MAX_TOKENS = 200
-TEMPERATURE = 0.8  # Limit randomness of response
+TEMPERATURE = 0.8  # Higher temperature for more 'interesting' responses
 
 
 def response_to_conversation(request):

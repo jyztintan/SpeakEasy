@@ -141,7 +141,10 @@ def generate_openai_init_response(context):
             
             Requirements:
             - "refined_context": A refined version of the user's initial context that is clear and concise.
-            - "first_message": An initial message to initiate a detailed conversation about the image and context.
+            - "first_message": An initial message to initiate a detailed conversation 
+            about the image and context in Chinese.
+            - "translated": The initial message to initiate a detailed conversation 
+            about the image and context translated in English.
             
             Ensure the response is in valid JSON format with the exact field names specified.
         """
