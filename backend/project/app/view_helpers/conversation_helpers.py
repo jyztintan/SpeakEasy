@@ -1,11 +1,13 @@
 import json
 
-from openai import OpenAI
+from langchain_openai import ChatOpenAI
+# from openai import OpenAI
 import os
 from dotenv import load_dotenv
 from django.http import JsonResponse, HttpResponse
 from rest_framework.response import Response
 from rest_framework import status
+from .prompt_templates import *
 from ..serializer import (
     ConversationSerializer,
     LLMResponseSerializer,
@@ -17,6 +19,8 @@ API_KEY = os.getenv('OPENAI_API_KEY')
 MODEL = "gpt-4o-mini"
 MAX_TOKENS = 200
 TEMPERATURE = 0.8  # Higher temperature for more 'interesting' responses
+llm = ChatOpenAI(api_key=API_KEY, temperature=TEMPERATURE, model=MODEL, max_tokens=MAX_TOKENS)
+prompts = {}
 
 
 def response_to_conversation(request):
@@ -34,21 +38,21 @@ def response_to_conversation(request):
         return Response(
             {"error": "user_text is required"}, status=status.HTTP_400_BAD_REQUEST
         )
-    response = generate_openai_response(user_text)
-    try:
-        response_data = json.loads(response)
-        # mock_response = {
-        #     "text_response": "很高兴你觉得这个教程有趣！你学到了什么新知识吗？",
-        #     "feedback": "Your input is clear and correctly expresses a positive opinion about the tutorial.
-        #     To improve, consider adding more details about what you found interesting or what you learned.
-        #     This will enhance the complexity and depth of your expression.",
-        #     "translated_text": "I am glad you find this tutorial interesting! What new knowledge have you gained?",
-        #     "score": 85
-        # }
-    except json.JSONDecodeError:
-        return Response(
-            {"error": "Invalid response from OpenAI"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
+    response_data = generate_openai_responses(user_text)
+    # try:
+    #     response_data = json.loads(response)
+    #     # mock_response = {
+    #     #     "text_response": "很高兴你觉得这个教程有趣！你学到了什么新知识吗？",
+    #     #     "feedback": "Your input is clear and correctly expresses a positive opinion about the tutorial.
+    #     #     To improve, consider adding more details about what you found interesting or what you learned.
+    #     #     This will enhance the complexity and depth of your expression.",
+    #     #     "translated_text": "I am glad you find this tutorial interesting! What new knowledge have you gained?",
+    #     #     "score": 85
+    #     # }
+    # except json.JSONDecodeError:
+    #     return Response(
+    #         {"error": "Invalid response from OpenAI"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+    #     )
     serializer = LLMResponseSerializer(data=response_data)
     print(serializer)
     if serializer.is_valid():
@@ -57,38 +61,22 @@ def response_to_conversation(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-def generate_openai_response(user_text):
-    prompt = f"""
-            You are a helpful language learning assistant. 
-            Provide a structured JSON response containing the following fields 
-            based on the user's input and strictly nothing else. 
-            No ```json declaration needed, just the JSON object.
-
-            User Input: "{user_text}"
-
-            Requirements:
-            - "text": A meaningful and contextually appropriate response to the user's input in Chinese.
-            - "feedback": Constructive feedback on the user's input, 
-            highlighting strengths and areas for improvement in English.
-            - "translated_text": Translation of the appropriate text_response in English.
-            - "score": A numerical score between 0 and 100 
-            evaluating the user's input based on correctness, clarity, and complexity.
-
-            Ensure the response is in valid JSON format with the exact field names specified.
-            """
-    messages = [
-        {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": prompt}
-    ]
-    client = OpenAI(api_key=API_KEY)
-    response = client.chat.completions.create(
-        model=MODEL,
-        messages=messages,
-        max_tokens=MAX_TOKENS,
-        temperature=TEMPERATURE
-    )
-    # print(response.choices[0].message.content)
-    return response.choices[0].message.content
+def generate_openai_responses(user_text):
+    output = {}
+    prompt = response_to_user()
+    chain = prompt | llm
+    print(chain.invoke({"user_input": user_text}))
+    output['text'] = chain.invoke({"user_input": user_text}).content
+    prompt = translate_cn()
+    chain = prompt | llm
+    output['translated_text'] = chain.invoke({"chinese": output['text']}).content
+    prompt = feedback_to_user()
+    chain = prompt | llm
+    output['feedback'] = chain.invoke({"user_input": user_text}).content
+    prompt = get_user_score()
+    chain = prompt | llm
+    output['score'] = chain.invoke({"user_input": user_text}).content
+    return output
 
 
 def response_to_get_help(request):
