@@ -127,7 +127,7 @@ export default function SnapPhoto({ isMobile }: { isMobile: boolean }) {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Context</FormLabel>
+                  <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input placeholder="Enter name for scenario" {...field} />
                   </FormControl>
