@@ -1,7 +1,7 @@
 import Navbar from "@/components/navigation/Navbar";
-import LanguageCard from "./LanguageCard";
-import { createContext, useEffect, useState } from "react";
 import { apiUrl } from "@/main";
+import { createContext, useEffect, useState } from "react";
+import LanguageCard from "./LanguageCard";
 
 export type Scenario = {
   scenario_id: number;
@@ -40,7 +40,7 @@ export default function HomePage() {
         <div className="flex flex-col space-y-8 items-start p-4 w-full">
           <div className="flex flex-col w-full space-y-6 items-start">
             <h1 className="text-3xl font-bold">My Scenarios</h1>
-            <div className="flex space-x-4 w-full overflow-auto pb-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 pb-4">
               {cardData.map((scenario) => (
                 <LanguageCard key={scenario.scenario_id} scenario={scenario} />
               ))}

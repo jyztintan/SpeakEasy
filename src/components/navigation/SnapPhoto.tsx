@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button, LoadingButton } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -27,6 +27,7 @@ import * as z from "zod";
 import { FetchScenariosContext } from "../dashboard/Home";
 
 const formSchema = z.object({
+  name: z.string().max(150, "Max 150 characters"),
   image: z
     .custom<FileList>((value) => value instanceof FileList, {
       message: "Image is required.",
@@ -47,9 +48,11 @@ type FormValues = z.infer<typeof formSchema>;
 const apiUrl = import.meta.env.VITE_BACKEND_URL;
 
 export default function SnapPhoto({ isMobile }: { isMobile: boolean }) {
+  const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const user = JSON.parse(localStorage.getItem("SpeakEasyUser") as string);
   const user_id = user["uid"];
-  const [open, setOpen] = useState(false);
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -61,22 +64,24 @@ export default function SnapPhoto({ isMobile }: { isMobile: boolean }) {
   const onSubmit = async (data: FormValues) => {
     const formData = new FormData();
 
-    formData.append('user_id', user_id);
-    formData.append('name', "test_name"); // TODO: add a textbox for users to insert name
-    formData.append('image', data.image[0]);
-    formData.append('context', data.context);
+    formData.append("user_id", user_id);
+    formData.append("name", data.name);
+    formData.append("image", data.image[0]);
+    formData.append("context", data.context);
 
+    setIsLoading(true);
     try {
       const response = await fetch(`${apiUrl}/api/v1/scenarios/`, {
-        method: 'POST',
-        body: formData, 
+        method: "POST",
+        body: formData,
       });
       await response.json(); // wait for backend to return
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     }
     fetchScenarios();
     setOpen(false);
+    setIsLoading(false);
   };
 
   return (
@@ -119,6 +124,19 @@ export default function SnapPhoto({ isMobile }: { isMobile: boolean }) {
             />
             <FormField
               control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter name for scenario" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="context"
               render={({ field }) => (
                 <FormItem>
@@ -136,7 +154,9 @@ export default function SnapPhoto({ isMobile }: { isMobile: boolean }) {
               )}
             />
             <DialogFooter>
-              <Button type="submit">Create Scenario</Button>
+              <LoadingButton type="submit" loading={isLoading}>
+                Create Scenario
+              </LoadingButton>
             </DialogFooter>
           </form>
         </Form>
