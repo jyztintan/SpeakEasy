@@ -5,7 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import { apiUrl } from "@/main";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Mic, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Scenario } from "../dashboard/Home";
 import Navbar from "../navigation/Navbar";
@@ -53,6 +53,18 @@ export default function ConversationPage() {
   ]);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [commentIdx, setCommentIdx] = useState(0);
+
+  const messageContainerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    // Auto-scroll to the bottom when messages are updated
+    if (messageContainerRef.current) {
+      messageContainerRef.current.scrollTo({
+        top: messageContainerRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [messages]);
 
   const SpeechRecognition =
     window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -144,7 +156,10 @@ export default function ConversationPage() {
       <div className="flex flex-col space-y-4 items-start p-4 w-full h-[90%]">
         <div className="flex space-x-6 w-full h-full">
           <Card className="flex flex-col basis-3/5 items-center justify-center">
-            <CardContent className="basis-11/12 w-full p-6 space-y-4 overflow-y-auto">
+            <CardContent
+              ref={messageContainerRef}
+              className="basis-11/12 w-full p-6 space-y-4 overflow-y-auto"
+            >
               {messages.map((message, index) => (
                 <div
                   className="flex w-full"
@@ -176,7 +191,7 @@ export default function ConversationPage() {
             {isEnded ? (
               <div className="py-4">
                 <Button onClick={() => navigate("/dashboard")}>
-                  Return Back
+                  Return To Dashboard
                 </Button>
               </div>
             ) : (
@@ -234,7 +249,8 @@ export default function ConversationPage() {
                           }
                         }, 0) /
                           (messages.length / 2)
-                      )} / 100
+                      )}{" "}
+                      / 100
                     </Badge>
                   </div>
                   <h4 className="font-semibold mt-4">Individual Comment</h4>
@@ -246,7 +262,10 @@ export default function ConversationPage() {
                       <p>{messages[commentIdx + 1].feedback}</p>
                     </div>
                   ) : (
-                    <p>Click on a message to show feedback</p>
+                    <p>
+                      Click on a the 'Show Feedback' button of each message to
+                      view the specific improvements for that message.
+                    </p>
                   )}
                 </div>
               ) : (
