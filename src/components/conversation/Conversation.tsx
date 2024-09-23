@@ -4,10 +4,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { apiUrl } from "@/main";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Mic, X } from "lucide-react";
+import { Mic, X, HelpCircle, AudioLines } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Scenario } from "../dashboard/Home";
+import { LoadingButton } from "@/components/ui/button";
 import Navbar from "../navigation/Navbar";
 import Message from "./Message";
 import SuggestedReply from "./SuggestedReply";
@@ -18,20 +19,24 @@ export type ConversationResponse = {
   translated_text?: string;
   feedback?: string;
   score?: number;
+  utterance?: SpeechSynthesisUtterance
 };
 
 export type Suggestion = {
   text: string;
   translated_text: string;
+  utterance: SpeechSynthesisUtterance
 };
 
-export function readAloud(text: string): void {
-  const synth: SpeechSynthesis = window.speechSynthesis;
-
-  const utterance = new SpeechSynthesisUtterance(text);
+export function readAloud(utterance: SpeechSynthesisUtterance): void {
   utterance.lang = "zh-CN";
-
+  const synth : SpeechSynthesis = window.speechSynthesis;
   synth.speak(utterance);
+}
+
+export function cancelReading() : void {
+  const synth : SpeechSynthesis = window.speechSynthesis;
+  synth.cancel();
 }
 
 export default function ConversationPage() {
@@ -48,9 +53,12 @@ export default function ConversationPage() {
     {
       role: "assistant",
       text: scenario.first_message,
-      translated_text: "Translated text",
+      translated_text: scenario.translated_first_message,
+      utterance: new SpeechSynthesisUtterance(scenario.first_message)
     },
   ]);
+  const [latestResponse, setLatestResponse] = useState<string>(scenario.first_message);
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [commentIdx, setCommentIdx] = useState(0);
 
@@ -66,18 +74,23 @@ export default function ConversationPage() {
     }
   }, [messages]);
 
+  const [isSpeaking, setIsSpeaking] = useState(false);
+ 
   const SpeechRecognition =
     window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRecognition) {
     // For Firefox browser
     alert("Speech recognition is not supported in this browser.");
   }
-  const recognition = new SpeechRecognition();
 
+  const recognition = new SpeechRecognition();
   recognition.lang = "zh-CN";
 
-  recognition.onresult = (event: SpeechRecognitionEvent) => {
-    const text: string = event.results[0][0].transcript;
+  recognition.onresult = (event) => {
+    if (isSpeaking) {
+      setIsSpeaking(false);
+    }
+    const text = event.results[0][0].transcript;
     // add user's text to the conversation
     setMessages((prevMessages) => [
       ...prevMessages,
@@ -86,21 +99,29 @@ export default function ConversationPage() {
 
     // fetch AI's response and add to the conversation
     getResponse(text).then((res) => {
-      setMessages((prevMessages) => [...prevMessages, res]);
-      readAloud(res.text);
+      const message = {...res, utterance: new SpeechSynthesisUtterance(res.text)};
+      setMessages((prevMessages) => [...prevMessages, message]);
+      setLatestResponse(res.text);
+      readAloud(message.utterance);
       setSuggestions([]);
     });
   };
 
+  recognition.onend = () => {
+    setIsSpeaking(false);
+  }
+
   recognition.onerror = (event) => {
     if (event.error === "no-speech") {
-      console.log("No speech detected.");
+      alert("No speech detected.");
     } else {
-      console.error("Speech recognition error: ", event.error);
+      alert(event.error);
     }
+    setIsSpeaking(false);
   };
 
-  function handleRecord() {
+  async function handleRecord() {
+    setIsSpeaking(true);
     recognition.start();
   }
 
@@ -126,12 +147,12 @@ export default function ConversationPage() {
     return msg;
   }
 
-  async function getSuggestions(text: string): Promise<void> {
+  async function getSuggestions(): Promise<void> {
     const body = {
       user_id: user_id,
       scenario_id: scenario.scenario_id,
       context_text: scenario.context,
-      prev_gpt_message: text,
+      prev_gpt_message: latestResponse,
     };
 
     const response = await fetch(`${apiUrl}/api/v1/get-help/`, {
@@ -142,14 +163,18 @@ export default function ConversationPage() {
       body: JSON.stringify(body),
     });
     const res = await response.json();
-    const suggestions: Suggestion[] = res["suggestions"];
+    let suggestions : Suggestion[] = res["suggestions"];
+    suggestions = suggestions.map<Suggestion>(
+      (suggestion) => {
+        return {...suggestion, utterance: new SpeechSynthesisUtterance(suggestion.text)}
+      });
     setSuggestions(suggestions);
   }
 
   // might be called twice in dev mode, but only once in prod mode due to StrictMode,
   // read here: https://www.dhiwise.com/post/resolving-useeffect-running-twice-a-comprehensive-guide
   useEffect(() => {
-    readAloud(messages[0]["text"]);
+    readAloud(messages[0].utterance as SpeechSynthesisUtterance);
   }, []);
 
   return (
@@ -178,6 +203,7 @@ export default function ConversationPage() {
                     showComment={() => {
                       setCommentIdx(index);
                     }}
+                    utterance={message.utterance}
                   />
                 </div>
               ))}
@@ -197,17 +223,31 @@ export default function ConversationPage() {
                 </Button>
               </div>
             ) : (
-              <div className="flex basis-1/12 space-x-4 py-4">
-                <Button className="size-12 rounded-full" onClick={handleRecord}>
+              <div className="flex basis-1/12 space-x-4 py-4 items-center">
+                {isSpeaking == true
+                ?
+                (<Button className="rounded-full text-black bg-white" disabled >
+                  Recording audio... &nbsp;
+                  <AudioLines size={18} />
+                </Button>)
+                : 
+                (
+                <>
+                <Button className="rounded-full" onClick={handleRecord}>
+                  Speak &nbsp;
                   <Mic size={16} />
                 </Button>
                 <Button
                   variant="secondary"
-                  className="size-12 rounded-full"
+                  className="bg-red-500 hover:bg-red-600 hover:border-red-600 text-white rounded-full"
                   onClick={() => setIsEnded(true)}
                 >
+                  End &nbsp;
                   <X size={16} />
                 </Button>
+                </>
+                )
+                }
               </div>
             )}
           </Card>
@@ -270,12 +310,28 @@ export default function ConversationPage() {
                     </p>
                   )}
                 </div>
-              ) : (
-                <div className="flex flex-col space-y-2 text-left">
-                  <h3 className="text-lg font-semibold">Suggested Replies</h3>
+              ) :
+                (<div className="flex flex-col space-y-2 text-left">
+                  {suggestions.length === 0 ?
+                  (<LoadingButton
+                    className="flex items-center space-x-2"
+                    size="sm"
+                    variant="secondary"
+                    onClick={async () => {
+                      setIsLoadingSuggestions(true);
+                      await getSuggestions();
+                      setIsLoadingSuggestions(false);
+                    }}
+                    loading={isLoadingSuggestions}
+                  >
+                    {isLoadingSuggestions || <HelpCircle className="w-4 h-4 mr-1" />}
+                    Unsure of what to reply? Click here to get some suggestions!
+                  </LoadingButton>)
+                  : 
+                  (<h3 className="text-lg font-semibold">Suggested Replies</h3>)}
                   <div className="space-y-4">
                     {suggestions.map((suggestion, index) => (
-                      <SuggestedReply key={index} message={suggestion} />
+                      <SuggestedReply key={index} message={suggestion} utterance={suggestion.utterance}/>
                     ))}
                   </div>
                 </div>
