@@ -1,50 +1,75 @@
-# React + TypeScript + Vite
+# SpeakEasy
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+SpeakEasy is a language learning platform that focuses on immersing users in real-world scenarios. Each scenario is conducted through actual conversations, where the user speaks to our application about the specific scenario. The scenarios are designed to provide contextual learning, where the flow of conversation is dynamic, driven by interaction between the user and a generative AI. This allows for personalised and adaptive language practice, offering a more natural and engaging learning experience.
 
-Currently, two official plugins are available:
+Application: https://speakeasy-speakfreely.netlify.app/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# Group Members
 
-## Expanding the ESLint configuration
+## Daniel Kok
+- Matric Number:
+- Contributions:
+  - Designed frontend on Figma
+  - Developed and designed landing page
+  - Developed Frontend pages
+    
+## Justin Tan
+- Matric Number:
+- Contributions:
+  - Prompt Engineering with Langchain
+  - LLM Integration
+    
+## Lam Jiu Fong
+- Matric Number:
+- Contributions:
+  - Set up MongoDB
+  - Developed Frontend pages
+    
+## Bryan Ho
+- Matric Number: A0234509E
+- Contributions:
+  - Wrote APIs
+  - Hosted Frontend on Netlify and Backend on Vercel
+  - UI touch ups
+  - Set up Google Authentication
+  - Set up and implement Google Cloud Storage
+ 
+# Set Up Instructions
+## Frontend
+- At the root of the repository, run `npm i` to install the packages
+- Run `npm run dev` to start the application
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Backend
+- Change directory to `backend` folder and run `python3 -m venv env` to create the virtual environment
+- Then run `source env/bin/activate` to enter the virtual environment
+- The run `pip in stall -r requirements.txt` to download the dependencies
+- Change directory to `project` and run ` python3 manage.py runserver` to start the backend
 
-- Configure the top-level `parserOptions` property like this:
+  ## Note:
+  Environment variables required for the Frontend
+  - VITE_BACKEND_URL="http://127.0.0.1:8000"
+  - VITE_GOOGLE_APIKEY
+  - VITE_GOOGLE_AUTHDOMAIN
+  - VITE_GOOGLE_PROJECTID
+  - VITE_GOOGLE_STORAGEBUCKET
+  - VITE_GOOGLE_MESSAGINGSSENDERID
+  - VITE_GOOGLE_APPID
+  - VITE_GOOGLE_MEASUREMENTID
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+  Environment variables required for the Backend
+  - OPENAI_API_KEY
+  - GOOGLE_APPLICATION_CREDENTIALS_JSON
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+# Resources
+## Frontend
+- ShadCN
+- TailwindCSS
+- Firebase Authentication
+- OGP
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## Backend
+- Python
+- Django
+- MongoDB
+- Google Cloud Storage for blob store
+- Langchain
