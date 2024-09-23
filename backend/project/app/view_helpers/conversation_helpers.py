@@ -14,7 +14,7 @@ from ..serializer import (
 
 # Global Variables
 load_dotenv()  # Need to call to load env variables
-API_KEY = os.getenv('OPENAI_API_KEY')
+API_KEY = os.getenv("OPENAI_API_KEY")
 MODEL = "gpt-4o-mini"
 MAX_TOKENS = 400
 TEMPERATURE = 0.8  # Higher temperature for more 'interesting' responses
@@ -85,7 +85,8 @@ def response_to_get_help(request):
         response_data = json.loads(response)
     except json.JSONDecodeError:
         return Response(
-            {"error": "Invalid response from OpenAI"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            {"error": "Invalid response from OpenAI"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 
     return JsonResponse(response_data)
