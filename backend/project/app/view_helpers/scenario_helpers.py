@@ -2,11 +2,12 @@ import json
 import os
 
 from dotenv import load_dotenv
-from openai import OpenAI
+from langchain_openai import ChatOpenAI
 from pymongo.errors import DuplicateKeyError, OperationFailure
 from django.http import JsonResponse, HttpResponse
 from rest_framework.response import Response
 from rest_framework import status
+from .prompt_templates import *
 from ..serializer import ScenarioSerializer
 from db_connection import users_collection, scenarios_collection
 import base64
@@ -18,6 +19,10 @@ API_KEY = os.getenv("OPENAI_API_KEY")
 MODEL = "gpt-4o-mini"
 MAX_TOKENS = 200
 TEMPERATURE = 0.8  # Limit randomness of response
+llm = ChatOpenAI(api_key=API_KEY, temperature=TEMPERATURE, model=MODEL, max_tokens=MAX_TOKENS)
+prompts = {"refine_context":refine_context(),
+           "generate_init_message":generate_init_message(),
+           "translate_cn":translate_cn()}
 
 
 def delete_scenario(request):
@@ -68,6 +73,7 @@ def create_scenario(request):
     #      "image" : image
     #      "name" : "name of scenario",
     #      "first_message" : "good bye world"
+    #      "translated_first_message" : “你好”
     #  }
 
     # Handle image file from request.FILES
@@ -96,21 +102,15 @@ def create_scenario(request):
     }
     scenario_data["scenario_id"] = new_scenario_id
     scenario_data["image"] = image_url
-    serializer = ScenarioSerializer(data=scenario_data)
 
     # Refine context and get first message from GPT
     init_context = scenario_data.get("context")
     response = generate_openai_init_response(init_context)
-    try:
-        response_data = json.loads(response)
-    except json.JSONDecodeError:
-        return Response(
-            {"error": "Invalid response from OpenAI"},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
-    scenario_data["context"] = response_data.get("refined_context")
-    scenario_data["first_message"] = response_data.get("first_message")
+    scenario_data["context"] = response.get("context")
+    scenario_data["first_message"] = response.get("first_message")
+    scenario_data["translated_first_message"] = response.get("translated_text")
 
+    serializer = ScenarioSerializer(data=scenario_data)
     if serializer.is_valid():
         try:
             # update user's scenarios_id arr
@@ -130,30 +130,18 @@ def create_scenario(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-def generate_openai_init_response(context):
-    prompt = f"""
-            You are a helpful language learning assistant. 
-            Provide a structured JSON response containing the following fields 
-            based on the user's input and strictly nothing else. 
-            No ```json declaration needed, just the JSON object.
-            
-            User's initial context: '{context}'
-            
-            Requirements:
-            - "refined_context": A refined version of the user's initial context that is clear and concise.
-            - "first_message": An initial message to initiate a detailed conversation about the image and context.
-            
-            Ensure the response is in valid JSON format with the exact field names specified.
-        """
-    messages = [
-        {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": prompt},
-    ]
-    client = OpenAI(api_key=API_KEY)
-    response = client.chat.completions.create(
-        model=MODEL, messages=messages, max_tokens=MAX_TOKENS, temperature=TEMPERATURE
-    )
-    return response.choices[0].message.content
+def generate_openai_init_response(init_context):
+    output = {}
+    prompt = prompts["refine_context"]
+    chain = prompt | llm
+    output["context"] = chain.invoke({"context": init_context}).content
+    prompt = prompts["generate_init_message"]
+    chain = prompt | llm
+    output["first_message"] = chain.invoke({"context": output["context"]}).content
+    prompt = prompts["translate_cn"]
+    chain = prompt | llm
+    output["translated_text"] = chain.invoke({"chinese": output["first_message"]}).content
+    return output
 
 
 def upload_image_to_cloud_storage(image_file, image_name):
