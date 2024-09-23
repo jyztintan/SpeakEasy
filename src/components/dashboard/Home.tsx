@@ -9,6 +9,7 @@ export type Scenario = {
   image: string;
   context: string;
   first_message: string;
+  translated_first_message: string;
 };
 
 export const FetchScenariosContext = createContext(() => {});

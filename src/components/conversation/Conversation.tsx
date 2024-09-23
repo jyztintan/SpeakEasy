@@ -97,6 +97,7 @@ export default function ConversationPage() {
     const body = {
       user_id: user_id,
       scenario_id: scenario.scenario_id,
+      context_text: scenario.context,
       user_text: text,
     };
 
@@ -117,6 +118,7 @@ export default function ConversationPage() {
     const body = {
       user_id: user_id,
       scenario_id: scenario.scenario_id,
+      context_text: scenario.context,
       prev_gpt_message: text,
     };
 
