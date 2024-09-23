@@ -115,6 +115,7 @@ export default function SnapPhoto({ isMobile }: { isMobile: boolean }) {
                     <Input
                       type="file"
                       accept="image/*"
+                      capture="environment"
                       onChange={(e) => onChange(e.target.files)}
                     />
                   </FormControl>
