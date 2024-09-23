@@ -1,14 +1,4 @@
 from langchain_core.prompts import PromptTemplate
-from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
-import os
-
-load_dotenv()  # Need to call to load env variables
-API_KEY = os.getenv('OPENAI_API_KEY')
-MODEL = "gpt-4o-mini"
-MAX_TOKENS = 300
-TEMPERATURE = 0.8  # Higher temperature for more 'interesting' responses
-llm = ChatOpenAI(api_key=API_KEY, temperature=TEMPERATURE, model=MODEL, max_tokens=MAX_TOKENS)
 
 
 def translate_cn():
@@ -60,31 +50,7 @@ def get_user_score():
     return PromptTemplate.from_template(prompt)
 
 
-
-# def conversation_response_template():
-#     prompt = """
-#         You are a helpful language learning assistant.
-#         Provide a structured JSON response containing the following fields
-#         based on the user's input and strictly nothing else.
-#         No ```json declaration needed, just the JSON object.
-#
-#         User Input: "{user_input}"
-#
-#         Requirements:
-#         - "text": A meaningful and contextually appropriate response to the user's input in Chinese.
-#         - "feedback": Constructive feedback on the user's input,
-#         highlighting strengths and areas for improvement in English.
-#         - "translated_text": Translation of the appropriate text_response in English.
-#         - "score": A numerical score between 0 and 100
-#         evaluating the user's input based on correctness, clarity, and complexity.
-#
-#         Ensure the response is in valid JSON format with the exact field names specified.
-#         """
-#
-#     return PromptTemplate.from_template(prompt)
-
-
-def conversation_suggestion_template():
+def conversation_suggestion():
     prompt = """
             You are a helpful language learning assistant. 
             Provide a structured JSON response containing the following fields 
@@ -92,6 +58,7 @@ def conversation_suggestion_template():
             No ```json declaration needed, just the JSON object.
 
             Previous Input: "{prev_message}"
+            Context:  "{context}"
 
             Requirements:
             - "first": A meaningful and contextually appropriate response to the Previous Input in Chinese.
@@ -116,23 +83,24 @@ def conversation_suggestion_template():
     return PromptTemplate.from_template(prompt)
 
 
-def scenario_creation_template():
+def refine_context():
     prompt = """
-                You are a helpful language learning assistant. 
-                Provide a structured JSON response containing the following fields 
-                based on the user's input and strictly nothing else. 
-                No ```json declaration needed, just the JSON object.
+            You are a helpful language learning assistant. 
+            User's initial context: '{context}'
+            Output a refined version of the user's initial context that is coherent and understandable.
+            Reframe the context clearly as an objective task.
+            """
 
-                User's initial context: '{context}'
+    return PromptTemplate.from_template(prompt)
 
-                Requirements:
-                - "refined_context": A refined version of the user's initial context that is clear and concise.
-                - "first_message": An initial message to initiate a detailed conversation 
-                about the image and context in Chinese.
-                - "translated": The initial message to initiate a detailed conversation 
-                about the image and context translated in English.
 
-                Ensure the response is in valid JSON format with the exact field names specified.
+def generate_init_message():
+    prompt = """
+            You should immediately assume the role of a helpful language learning assistant,
+            without responding to this prompt. 
+            Initial context: '{context}'
+            Output an initial message to initiate a detailed conversation 
+            about the context in Chinese.
             """
 
     return PromptTemplate.from_template(prompt)

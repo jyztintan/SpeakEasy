@@ -13,6 +13,7 @@ class Scenario(models.Model):
     image = models.CharField(max_length=100000)  # image url
     context = models.CharField(max_length=10000)
     first_message = models.CharField(max_length=10000)
+    translated_first_message = models.CharField(max_length=10000)
 
 
 class Conversation(models.Model):
