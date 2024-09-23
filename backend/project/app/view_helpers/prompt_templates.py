@@ -24,10 +24,10 @@ def feedback_to_user():
     prompt = """
         You are a helpful language learning assistant. 
         User Input: "{user_input}"
+        Context: "{context}"
         Output constructive feedback on the user's input, 
         highlighting strengths and areas for improvement in English.
-        Evaluating the user's input based on correctness, clarity, and complexity.
-        Take into account grammar and vocabulary.
+        Evaluating the user's input based on relevancy, coherence, and complexity.
         """
 
     return PromptTemplate.from_template(prompt)
@@ -37,8 +37,11 @@ def response_to_user():
     prompt = """
         You are a helpful language learning assistant. 
         User Input: "{user_input}"
-        Output A meaningful and contextually appropriate response to the user's input in Chinese.
-        Try to return with a question to keep the conversation going.
+        Context: "{context}"
+        Based on the user input and context, provide a meaningful and contextually appropriate response in Chinese.
+        If the user's input is irrelevant to the context or in English, you should reproach them and
+        remind them to continue the conversation in Chinese, focusing on maintaining relevance to the topic.
+        Aim to engage the user by concluding your response with a question, encouraging a continued dialogue.
         """
 
     return PromptTemplate.from_template(prompt)
@@ -48,8 +51,9 @@ def get_user_score():
     prompt = """
         You are a helpful language learning assistant. 
         User Input: "{user_input}"
+        Context: "{context}"
         Strictly only output a numerical score between 0 and 100. 
-        evaluating the user's input based on correctness, clarity, and complexity.
+        evaluating the user's input based on relevancy, coherence, and complexity.
         Take into account grammar and vocabulary.
         """
 
@@ -57,27 +61,27 @@ def get_user_score():
 
 
 
-def conversation_response_template():
-    prompt = """
-        You are a helpful language learning assistant. 
-        Provide a structured JSON response containing the following fields 
-        based on the user's input and strictly nothing else. 
-        No ```json declaration needed, just the JSON object.
-
-        User Input: "{user_input}"
-
-        Requirements:
-        - "text": A meaningful and contextually appropriate response to the user's input in Chinese.
-        - "feedback": Constructive feedback on the user's input, 
-        highlighting strengths and areas for improvement in English.
-        - "translated_text": Translation of the appropriate text_response in English.
-        - "score": A numerical score between 0 and 100 
-        evaluating the user's input based on correctness, clarity, and complexity.
-
-        Ensure the response is in valid JSON format with the exact field names specified.
-        """
-
-    return PromptTemplate.from_template(prompt)
+# def conversation_response_template():
+#     prompt = """
+#         You are a helpful language learning assistant.
+#         Provide a structured JSON response containing the following fields
+#         based on the user's input and strictly nothing else.
+#         No ```json declaration needed, just the JSON object.
+#
+#         User Input: "{user_input}"
+#
+#         Requirements:
+#         - "text": A meaningful and contextually appropriate response to the user's input in Chinese.
+#         - "feedback": Constructive feedback on the user's input,
+#         highlighting strengths and areas for improvement in English.
+#         - "translated_text": Translation of the appropriate text_response in English.
+#         - "score": A numerical score between 0 and 100
+#         evaluating the user's input based on correctness, clarity, and complexity.
+#
+#         Ensure the response is in valid JSON format with the exact field names specified.
+#         """
+#
+#     return PromptTemplate.from_template(prompt)
 
 
 def conversation_suggestion_template():

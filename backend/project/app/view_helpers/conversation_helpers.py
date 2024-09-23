@@ -24,58 +24,37 @@ prompts = {}
 
 
 def response_to_conversation(request):
-    # request body
-    # {
-    # "user_id" : "newuserjustin",
-    # "scenario_id" : 1,
-    # "user_text" : "这个教程非常有趣"
-    # }
     serializer = ConversationSerializer(data=request.data)
     if not serializer.is_valid():
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     user_text = request.data.get("user_text", None)
+    context_text = request.data.get("context_text", None)
     if not user_text:
         return Response(
             {"error": "user_text is required"}, status=status.HTTP_400_BAD_REQUEST
         )
-    response_data = generate_openai_responses(user_text)
-    # try:
-    #     response_data = json.loads(response)
-    #     # mock_response = {
-    #     #     "text_response": "很高兴你觉得这个教程有趣！你学到了什么新知识吗？",
-    #     #     "feedback": "Your input is clear and correctly expresses a positive opinion about the tutorial.
-    #     #     To improve, consider adding more details about what you found interesting or what you learned.
-    #     #     This will enhance the complexity and depth of your expression.",
-    #     #     "translated_text": "I am glad you find this tutorial interesting! What new knowledge have you gained?",
-    #     #     "score": 85
-    #     # }
-    # except json.JSONDecodeError:
-    #     return Response(
-    #         {"error": "Invalid response from OpenAI"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
-    #     )
+    response_data = generate_openai_responses(user_text, context_text)
     serializer = LLMResponseSerializer(data=response_data)
-    print(serializer)
     if serializer.is_valid():
         return Response(serializer.data, status=status.HTTP_200_OK)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-def generate_openai_responses(user_text):
+def generate_openai_responses(user_text, context_text):
     output = {}
     prompt = response_to_user()
     chain = prompt | llm
-    print(chain.invoke({"user_input": user_text}))
-    output['text'] = chain.invoke({"user_input": user_text}).content
+    output['text'] = chain.invoke({"user_input": user_text, "context": context_text}).content
     prompt = translate_cn()
     chain = prompt | llm
     output['translated_text'] = chain.invoke({"chinese": output['text']}).content
     prompt = feedback_to_user()
     chain = prompt | llm
-    output['feedback'] = chain.invoke({"user_input": user_text}).content
+    output['feedback'] = chain.invoke({"user_input": user_text, "context": context_text}).content
     prompt = get_user_score()
     chain = prompt | llm
-    output['score'] = chain.invoke({"user_input": user_text}).content
+    output['score'] = chain.invoke({"user_input": user_text, "context": context_text}).content
     return output
 
 

@@ -18,6 +18,7 @@ class Scenario(models.Model):
 class Conversation(models.Model):
     user_id = models.CharField(max_length=500)
     scenario_id = models.IntegerField()
+    context_text = models.CharField(max_length=10000)
     user_text = models.CharField(max_length=10000)
 
 
