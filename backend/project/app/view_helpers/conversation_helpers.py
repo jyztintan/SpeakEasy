@@ -13,7 +13,7 @@ from ..serializer import (
 
 # Global Variables
 load_dotenv()  # Need to call to load env variables
-API_KEY = os.getenv('OPENAI_API_KEY')
+API_KEY = os.getenv("OPENAI_API_KEY")
 MODEL = "gpt-4o-mini"
 MAX_TOKENS = 200
 TEMPERATURE = 0.8  # Limit randomness of response
@@ -47,7 +47,8 @@ def response_to_conversation(request):
         # }
     except json.JSONDecodeError:
         return Response(
-            {"error": "Invalid response from OpenAI"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            {"error": "Invalid response from OpenAI"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
     serializer = LLMResponseSerializer(data=response_data)
     print(serializer)
@@ -78,14 +79,11 @@ def generate_openai_response(user_text):
             """
     messages = [
         {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": prompt}
+        {"role": "user", "content": prompt},
     ]
     client = OpenAI(api_key=API_KEY)
     response = client.chat.completions.create(
-        model=MODEL,
-        messages=messages,
-        max_tokens=MAX_TOKENS,
-        temperature=TEMPERATURE
+        model=MODEL, messages=messages, max_tokens=MAX_TOKENS, temperature=TEMPERATURE
     )
     # print(response.choices[0].message.content)
     return response.choices[0].message.content
@@ -116,7 +114,8 @@ def response_to_get_help(request):
         response_data = json.loads(response)
     except json.JSONDecodeError:
         return Response(
-            {"error": "Invalid response from OpenAI"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            {"error": "Invalid response from OpenAI"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 
     return JsonResponse(response_data)
@@ -152,14 +151,11 @@ def generate_openai_suggestions(prev_message):
             """
     messages = [
         {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": prompt}
+        {"role": "user", "content": prompt},
     ]
     client = OpenAI(api_key=API_KEY)
     response = client.chat.completions.create(
-        model=MODEL,
-        messages=messages,
-        max_tokens=MAX_TOKENS,
-        temperature=TEMPERATURE
+        model=MODEL, messages=messages, max_tokens=MAX_TOKENS, temperature=TEMPERATURE
     )
     # print(response.choices[0].message.content)
     return response.choices[0].message.content
