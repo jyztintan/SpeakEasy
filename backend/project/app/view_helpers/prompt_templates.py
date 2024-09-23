@@ -18,6 +18,7 @@ def feedback_to_user():
         Output constructive feedback on the user's input, 
         highlighting strengths and areas for improvement in English.
         Evaluating the user's input based on relevancy, coherence, and complexity.
+        Feedback should be at most 3 sentences without any special formatting.
         """
 
     return PromptTemplate.from_template(prompt)
@@ -32,6 +33,7 @@ def response_to_user():
         If the user's input is irrelevant to the context or in English, you should reproach them and
         remind them to continue the conversation in Chinese, focusing on maintaining relevance to the topic.
         Aim to engage the user by concluding your response with a question, encouraging a continued dialogue.
+        Response should be not be long.
         """
 
     return PromptTemplate.from_template(prompt)
@@ -99,8 +101,9 @@ def generate_init_message():
             You should immediately assume the role of a helpful language learning assistant,
             without responding to this prompt. 
             Initial context: '{context}'
-            Output an initial message to initiate a detailed conversation 
+            Output an initial message to initiate a conversation 
             about the context in Chinese.
+            It should not be too long.
             """
 
     return PromptTemplate.from_template(prompt)
