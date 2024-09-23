@@ -90,12 +90,12 @@ export default function SnapPhoto({ isMobile }: { isMobile: boolean }) {
         {isMobile ? (
           <div className="flex flex-col items-center space-y-1 text-foreground cursor-pointer hover:text-primary">
             <Camera size={14} />
-            <span className="text-xs">Snap Photo</span>
+            <span className="text-xs">Create Scenario</span>
           </div>
         ) : (
           <Button className="flex items-center">
             <Camera size={16} className="mr-2" />
-            <span>Snap Photo</span>
+            <span>Create Scenario</span>
           </Button>
         )}
       </DialogTrigger>
