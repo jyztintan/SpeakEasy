@@ -49,8 +49,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -62,6 +62,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # React frontend
     "https://speakeasy-speakfreely.netlify.app",
 ]
+
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = "project.urls"
 
