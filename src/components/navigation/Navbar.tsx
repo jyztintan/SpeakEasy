@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -74,9 +75,9 @@ export default function Navbar() {
             <User size={14} />
             <span className="text-xs">Profile</span>
           </div>
-          <button className="hidden md:flex">
+          <Button className="hidden md:flex" variant="outline" size="icon">
             <User size={16} />
-          </button>
+          </Button>
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
