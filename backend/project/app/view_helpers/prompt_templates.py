@@ -90,7 +90,7 @@ def refine_context():
             You are a helpful language learning assistant. 
             User's initial context: '{context}'
             Output a refined version of the user's initial context that is coherent and understandable.
-            Reframe the context clearly as an objective task.
+            Reframe the context clearly as an objective task without any special formatting.
             """
 
     return PromptTemplate.from_template(prompt)
@@ -98,9 +98,9 @@ def refine_context():
 
 def generate_init_message():
     prompt = """
-            You should immediately assume the role of a helpful language learning assistant,
+            You should take on the responding role of the context,
             without responding to this prompt. 
-            Initial context: '{context}'
+            For user: '{context}'
             Output an initial message to initiate a conversation 
             about the context in Chinese.
             It should not be too long.
