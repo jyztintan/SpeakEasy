@@ -93,14 +93,14 @@ export default function ConversationPage() {
       setIsSpeaking(false);
     }
     const text = event.results[0][0].transcript;
-    // add user's text to the conversation
     setMessages((prevMessages) => [
       ...prevMessages,
       { role: "user", text: text },
     ]);
 
     // fetch AI's response and add to the conversation
-    const inputs = userInputs + text;
+    const inputs = messages.map(msg => "{ role: " + msg.role + ", text: " + msg.text + "}").join(" ")
+        + "{ role: \"user\", text:" + text + " }";
     setUserInputs(inputs);
     getResponse(inputs).then((res) => {
       const message = {...res, utterance: new SpeechSynthesisUtterance(res.text)};
