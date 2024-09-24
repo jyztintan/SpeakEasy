@@ -20,10 +20,13 @@ Application: https://speakeasy-speakfreely.netlify.app/
   - LLM Integration
     
 ## Lam Jiu Fong
-- Matric Number:
+- Matric Number: A0255851Y
 - Contributions:
   - Set up MongoDB
   - Developed Frontend pages
+  - Wrote APIs in Frontend to link Backend
+  - Set up Speech Recognition
+  - Set up Text-to-Speech
     
 ## Bryan Ho
 - Matric Number: A0234509E
