@@ -7,7 +7,7 @@ from db_connection import users_collection, scenarios_collection
 from .view_helpers.scenario_helpers import create_scenario, delete_scenario
 from .view_helpers.conversation_helpers import (
     response_to_conversation,
-    response_to_get_help,
+    response_to_get_help, feedback_to_conversation,
 )
 
 # Create your views here.
@@ -99,6 +99,11 @@ def resource_scenario(request):
 @api_view(["POST"])
 def create_conversation_response(request):
     return response_to_conversation(request)
+
+
+@api_view(["POST"])
+def create_conversation_feedback(request):
+    return feedback_to_conversation(request)
 
 
 @api_view(["POST"])

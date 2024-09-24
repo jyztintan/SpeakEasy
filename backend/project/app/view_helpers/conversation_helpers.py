@@ -9,7 +9,7 @@ from rest_framework import status
 from .prompt_templates import *
 from ..serializer import (
     ConversationSerializer,
-    LLMResponseSerializer,
+    LLMResponseSerializer, LLMFeedbackSerializer,
 )
 
 # Global Variables
@@ -57,6 +57,36 @@ def generate_openai_responses(user_text, context_text):
     prompt = prompts["translate_cn"]
     chain = prompt | llm
     output['translated_text'] = chain.invoke({"chinese": output['text']}).content
+    return output
+
+
+def feedback_to_conversation(request):
+    # request body
+    # {
+    # "user_id" : "newuserjustin",
+    # "scenario_id" : 1,
+    # "context_text": "Describe your learning experience in the CS3216 Module"
+    # "user_text" : "这个教程非常有趣"
+    # }
+    serializer = ConversationSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    user_text = request.data.get("user_text", None)
+    context_text = request.data.get("context_text", None)
+    if not user_text:
+        return Response(
+            {"error": "user_text is required"}, status=status.HTTP_400_BAD_REQUEST
+        )
+    response_data = generate_openai_feedback(user_text, context_text)
+    serializer = LLMFeedbackSerializer(data=response_data)
+    if serializer.is_valid():
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+def generate_openai_feedback(user_text, context_text):
+    output = {}
     prompt = prompts["feedback_to_user"]
     chain = prompt | llm
     output['feedback'] = chain.invoke({"user_input": user_text, "context": context_text}).content

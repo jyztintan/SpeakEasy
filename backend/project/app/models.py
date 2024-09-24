@@ -25,6 +25,10 @@ class Conversation(models.Model):
 
 class LLMResponse(models.Model):
     text = models.CharField(max_length=100000)
-    feedback = models.CharField(max_length=10000)
     translated_text = models.CharField(max_length=100000)
+
+
+class LLMFeedback(models.Model):
+    feedback = models.CharField(max_length=10000)
     score = models.IntegerField()
+

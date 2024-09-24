@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, LLMFeedback
 from .models import Scenario
 from .models import Conversation
 from .models import LLMResponse
@@ -26,4 +26,10 @@ class ConversationSerializer(serializers.ModelSerializer):
 class LLMResponseSerializer(serializers.ModelSerializer):
     class Meta:
         model = LLMResponse
+        fields = "__all__"
+
+
+class LLMFeedbackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LLMFeedback
         fields = "__all__"
