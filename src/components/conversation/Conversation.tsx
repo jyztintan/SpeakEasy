@@ -57,12 +57,14 @@ export default function ConversationPage() {
       utterance: new SpeechSynthesisUtterance(scenario.first_message)
     },
   ]);
+  const [userInputs, setUserInputs] = useState("")
   const [latestResponse, setLatestResponse] = useState<string>(scenario.first_message);
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [commentIdx, setCommentIdx] = useState(0);
 
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
+
 
   useEffect(() => {
     // Auto-scroll to the bottom when messages are updated
@@ -98,7 +100,9 @@ export default function ConversationPage() {
     ]);
 
     // fetch AI's response and add to the conversation
-    getResponse(text).then((res) => {
+    const inputs = userInputs + text;
+    setUserInputs(inputs);
+    getResponse(inputs).then((res) => {
       const message = {...res, utterance: new SpeechSynthesisUtterance(res.text)};
       setMessages((prevMessages) => [...prevMessages, message]);
       setLatestResponse(res.text);
