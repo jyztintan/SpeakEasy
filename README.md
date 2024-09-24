@@ -7,25 +7,29 @@ Application: https://speakeasy-speakfreely.netlify.app/
 # Group Members
 
 ## Daniel Kok
+
 - Matric Number:
 - Contributions:
   - Designed frontend on Figma
   - Developed and designed landing page
   - Developed Frontend pages
-    
+
 ## Justin Tan
+
 - Matric Number:
 - Contributions:
   - Prompt Engineering with Langchain
   - LLM Integration
-    
+
 ## Lam Jiu Fong
+
 - Matric Number:
 - Contributions:
   - Set up MongoDB
   - Developed Frontend pages
-    
+
 ## Bryan Ho
+
 - Matric Number: A0234509E
 - Contributions:
   - Wrote APIs
@@ -33,20 +37,25 @@ Application: https://speakeasy-speakfreely.netlify.app/
   - UI touch ups
   - Set up Google Authentication
   - Set up and implement Google Cloud Storage
- 
+
 # Set Up Instructions
+
 ## Frontend
+
 - At the root of the repository, run `npm i` to install the packages
 - Run `npm run dev` to start the application
 
 ## Backend
+
 - Change directory to `backend` folder and run `python3 -m venv env` to create the virtual environment
 - Then run `source env/bin/activate` to enter the virtual environment
-- The run `pip in stall -r requirements.txt` to download the dependencies
+- The run `pip install -r requirements.txt` to download the dependencies
 - Change directory to `project` and run ` python3 manage.py runserver` to start the backend
 
   ## Note:
+
   Environment variables required for the Frontend
+
   - VITE_BACKEND_URL="http://127.0.0.1:8000"
   - VITE_GOOGLE_APIKEY
   - VITE_GOOGLE_AUTHDOMAIN
@@ -57,17 +66,21 @@ Application: https://speakeasy-speakfreely.netlify.app/
   - VITE_GOOGLE_MEASUREMENTID
 
   Environment variables required for the Backend
+
   - OPENAI_API_KEY
   - GOOGLE_APPLICATION_CREDENTIALS_JSON
 
 # Resources
+
 ## Frontend
+
 - ShadCN
 - TailwindCSS
 - Firebase Authentication
 - OGP
 
 ## Backend
+
 - Python
 - Django
 - MongoDB
