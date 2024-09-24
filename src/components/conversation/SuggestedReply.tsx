@@ -1,12 +1,23 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Languages, Volume2 } from "lucide-react";
-import { Suggestion, readAloud } from "./Conversation";
+import { Languages, Volume2, VolumeX } from "lucide-react";
+import { Suggestion, readAloud, cancelReading } from "./Conversation";
 import { useState } from "react";
 
 
-export default function SuggestedReply({message} : {message : Suggestion}) {
+export default function SuggestedReply({message, utterance} : {message : Suggestion, utterance : SpeechSynthesisUtterance}) {
   const [textDisplay, setTextDisplay] = useState<string>(message.text);
+  const [isReading, setIsReading] = useState(false);
+
+  if (utterance) {
+    utterance.onstart = () => {
+      setIsReading(true);
+    }
+
+    utterance.onend = () => {
+      setIsReading(false);
+    };
+  }
 
   function toggleTranslation() : void {
     setTextDisplay(textDisplay == message.text ? message.translated_text : message.text);
@@ -25,15 +36,28 @@ export default function SuggestedReply({message} : {message : Suggestion}) {
             <Languages size={12} />
             <span>See Translation</span>
           </Button>
-          <Button
-            className="flex items-center space-x-2"
-            size="sm"
-            variant="secondary"
-            onClick={() => readAloud(message.text)}
-          >
-            <Volume2 size={12} />
-            <span>Read Aloud</span>
-          </Button>
+          {isReading ? (
+              <Button
+                className="flex items-center space-x-2"
+                size="sm"
+                variant="secondary"
+                onClick={() => { setIsReading(false); cancelReading()}}
+              >
+                <VolumeX className="w-4 h-4 mr-1" />
+                Mute 
+              </Button>
+            )
+            : (
+              <Button
+              className="flex items-center space-x-2"
+              size="sm"
+              variant="secondary"
+              onClick={() => {setIsReading(true); readAloud(utterance)}}
+              >
+                <Volume2 className="w-4 h-4 mr-1" />
+                Read Aloud
+              </Button>)
+            }
         </div>
         <p>
           {textDisplay}

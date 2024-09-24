@@ -22,7 +22,7 @@ async function createUser(user_id: string) {
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { logIn } = useUserAuth();
+  const { logIn, user } = useUserAuth();
   const navigate = useNavigate();
 
   const handleLogin = async () => {
@@ -42,11 +42,10 @@ const Login = () => {
     }
   };
 
-  // code doesnt work if i dont comment out the section below, still havent figured out the reason yet
   // If user is already logged in, navigate to the dashboard automatically
-  // if (user) {
-  //   navigate("/dashboard");
-  // }
+  if (user) {
+    navigate("/dashboard");
+  }
 
   return (
     <div>

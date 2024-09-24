@@ -12,7 +12,7 @@ export default function LanguageCard({ scenario }: { scenario: Scenario }) {
   };
 
   return (
-    <div onClick={directToScenario}>
+    <div className="cursor-pointer" onClick={directToScenario}>
       <Card className="pb-4">
         <div className="overflow-hidden">
           <img

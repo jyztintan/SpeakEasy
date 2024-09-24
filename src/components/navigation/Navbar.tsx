@@ -4,8 +4,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Home, LogOut, User } from "lucide-react";
@@ -27,10 +25,10 @@ export default function Navbar() {
   const DesktopNav = () => (
     <nav className="hidden md:flex items-center justify-between bg-background p-4 border-b">
       <div className="flex items-center space-x-4">
-        <a href="/" className="text-2xl font-bold">
+        <a href="/dashboard" className="text-2xl font-bold">
           <img src="/logo.svg" alt="logo" className="h-10" />
         </a>
-        {menuItems.map((item) => (
+        {/* {menuItems.map((item) => (
           <a
             key={item.name}
             href={`/${item.name.toLowerCase()}`}
@@ -38,7 +36,7 @@ export default function Navbar() {
           >
             {item.name}
           </a>
-        ))}
+        ))} */}
       </div>
       <div className="flex items-center space-x-4">
         <SnapPhoto isMobile={false} />
@@ -82,8 +80,6 @@ export default function Navbar() {
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
-        <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={logOutUser}
           className="flex space-x-2 items-center"

@@ -1,22 +1,33 @@
-import { Button, LoadingButton } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { HelpCircle, Languages, MessagesSquare, Volume2 } from "lucide-react";
-import { useState } from "react";
-import { ConversationResponse, readAloud } from "./Conversation";
+import { Languages, MessagesSquare, Volume2, VolumeX } from "lucide-react";
+import { useState} from "react";
+import { cancelReading, ConversationResponse, readAloud } from "./Conversation";
 
 export default function Message({
   message,
   isEnded,
-  getSuggestions,
   showComment,
+  utterance
 }: {
   message: ConversationResponse;
   isEnded: boolean;
   getSuggestions: (text: string) => Promise<void>;
   showComment: () => void;
+  utterance: SpeechSynthesisUtterance | undefined;
 }) {
   const [textDisplay, setTextDisplay] = useState<string>(message.text);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isReading, setIsReading] = useState(false);
+
+  if (utterance) {
+    utterance.onstart = () => {
+      setIsReading(true);
+    }
+
+    utterance.onend = () => {
+      setIsReading(false);
+    };
+  }
 
   function toggleTranslation(): void {
     setTextDisplay(
@@ -34,7 +45,7 @@ export default function Message({
       }}
     >
       <CardContent className="p-4 text-left">
-        {message.role === "assistant" && !isEnded && (
+        {message.role === "assistant" && !isEnded && utterance && (
           <div className="flex space-x-2 mb-2">
             <Button
               className="flex items-center space-x-2"
@@ -45,29 +56,27 @@ export default function Message({
               <Languages className="w-4 h-4 mr-1" />
               See Translation
             </Button>
-            <Button
+            {isReading == true ? (
+              <Button
+                className="flex items-center space-x-2"
+                size="sm"
+                variant="secondary"
+                onClick={() => {setIsReading(false); cancelReading(); }}
+              >
+                <VolumeX className="w-4 h-4 mr-1" />
+                Mute 
+              </Button>
+            ) : (
+              <Button
               className="flex items-center space-x-2"
               size="sm"
               variant="secondary"
-              onClick={() => readAloud(message.text)}
-            >
-              <Volume2 className="w-4 h-4 mr-1" />
-              Read Aloud
-            </Button>
-            <LoadingButton
-              className="flex items-center space-x-2"
-              size="sm"
-              variant="secondary"
-              onClick={async () => {
-                setIsLoading(true);
-                await getSuggestions(message.text);
-                setIsLoading(false);
-              }}
-              loading={isLoading}
-            >
-              {isLoading || <HelpCircle className="w-4 h-4 mr-1" />}
-              Get Help
-            </LoadingButton>
+              onClick={() => {setIsReading(true); readAloud(utterance); }}
+              >
+                <Volume2 className="w-4 h-4 mr-1" />
+                Read Aloud
+              </Button>) 
+              }
           </div>
         )}
         {message.role === "user" && isEnded && (
