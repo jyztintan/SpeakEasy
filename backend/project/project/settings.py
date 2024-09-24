@@ -32,7 +32,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = [".vercel.app", "localhost", "127.0.0.1"]
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -58,7 +57,10 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # React frontend
+    "https://speakeasy-speakfreely.netlify.app",
+]
 
 CORS_ALLOW_CREDENTIALS = True
 
