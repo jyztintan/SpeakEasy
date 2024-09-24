@@ -40,7 +40,7 @@ const formSchema = z.object({
   context: z
     .string()
     .min(1, "Context is required.")
-    .max(100, "Context must be 100 characters or less."),
+    .max(1000, "Context must be 1000 characters or less."),
 });
 
 type FormValues = z.infer<typeof formSchema>;
