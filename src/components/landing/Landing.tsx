@@ -17,102 +17,112 @@ export default function LandingPage() {
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   return (
     <div className="flex flex-col min-h-screen w-screen">
-      <header className="px-4 lg:px-6 h-14 pt-4 flex items-center">
-        <div>
-          <a href="/" className="text-2xl font-bold">
-            <img src="/logo.svg" alt="logo" className="h-10" />
-          </a>
-          <span className="sr-only">SpeakEasy</span>
+      <header className="relative">
+        <div className="absolute inset-0 z-0">
+          <img
+            src="/people.png"
+            alt="Background"
+            className="w-full h-full object-cover blur-[1px]"
+          />
+          <div className="absolute inset-0 bg-black/60" />
         </div>
-        <nav className="hidden ml-auto md:flex gap-4 sm:gap-6">
-          <a
-            className="text-[#8C52FF] font-medium hover:underline underline-offset-4 hover:text-[#FF3131]"
-            href="#features"
-          >
-            Features
-          </a>
-          <a
-            className="text-[#8C52FF] font-medium hover:underline underline-offset-4 hover:text-[#FF3131]"
-            href="#how-it-works"
-          >
-            How It Works
-          </a>
-          <a
-            className="text-[#8C52FF] font-medium hover:underline underline-offset-4 hover:text-[#FF3131]"
-            href="#why-speakeasy"
-          >
-            Why SpeakEasy
-          </a>
-          <a
-            className="text-[#8C52FF] font-medium hover:underline underline-offset-4 hover:text-[#FF3131]"
-            href="#pricing"
-          >
-            Pricing
-          </a>
-          <a
-            className="text-[#8C52FF] font-medium hover:underline underline-offset-4 hover:text-[#FF3131]"
-            href="/login"
-          >
-            Login
-          </a>
-        </nav>
-        <Button
-          className="md:hidden ml-auto size-8 p-0"
-          onClick={toggleMenu}
-          variant="outline"
-        >
-          {isMenuOpen ? <X size={16} /> : <Menu size={16} />}
-        </Button>
-        {isMenuOpen && (
-          <div className="md:hidden absolute top-14 left-0 right-0 bg-black/90 p-4">
-            <nav className="flex flex-col gap-4">
+        <div className="relative z-10 px-4 lg:px-6 pt-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <a href="/" className="text-2xl font-bold">
+                <img src="/logo.svg" alt="logo" className="h-10" />
+              </a>
+              <span className="sr-only">SpeakEasy</span>
+            </div>
+            <nav className="hidden ml-auto md:flex gap-4 sm:gap-6">
               <a
-                className="text-sm font-medium text-white hover:underline underline-offset-4 hover:text-[#FF3131]"
+                className="text-white font-medium hover:underline underline-offset-4 hover:text-[#FF3131]"
                 href="#features"
-                onClick={toggleMenu}
               >
                 Features
               </a>
               <a
-                className="text-sm font-medium text-white hover:underline underline-offset-4 hover:text-[#FF3131]"
+                className="text-white font-medium hover:underline underline-offset-4 hover:text-[#FF3131]"
                 href="#how-it-works"
-                onClick={toggleMenu}
               >
                 How It Works
               </a>
               <a
-                className="text-sm font-medium text-white hover:underline underline-offset-4 hover:text-[#FF3131]"
+                className="text-white font-medium hover:underline underline-offset-4 hover:text-[#FF3131]"
                 href="#why-speakeasy"
-                onClick={toggleMenu}
               >
                 Why SpeakEasy
               </a>
               <a
-                className="text-sm font-medium text-white hover:underline underline-offset-4 hover:text-[#FF3131]"
+                className="text-white font-medium hover:underline underline-offset-4 hover:text-[#FF3131]"
                 href="#pricing"
-                onClick={toggleMenu}
               >
                 Pricing
               </a>
               <a
-                className="text-sm font-medium text-white hover:underline underline-offset-4 hover:text-[#FF3131]"
+                className="text-white font-medium hover:underline underline-offset-4 hover:text-[#FF3131]"
                 href="/login"
-                onClick={toggleMenu}
               >
                 Login
               </a>
             </nav>
+            <Button
+              className="md:hidden ml-auto size-8 p-0"
+              onClick={toggleMenu}
+              variant="secondary"
+            >
+              {isMenuOpen ? <X size={16} /> : <Menu size={16} />}
+            </Button>
           </div>
-        )}
-      </header>
-      <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
+          {isMenuOpen && (
+            <div className="md:hidden absolute top-14 left-0 right-0 bg-black/90 p-4">
+              <nav className="flex flex-col gap-4">
+                <a
+                  className="text-sm font-medium text-white hover:underline underline-offset-4 hover:text-[#FF3131]"
+                  href="#features"
+                  onClick={toggleMenu}
+                >
+                  Features
+                </a>
+                <a
+                  className="text-sm font-medium text-white hover:underline underline-offset-4 hover:text-[#FF3131]"
+                  href="#how-it-works"
+                  onClick={toggleMenu}
+                >
+                  How It Works
+                </a>
+                <a
+                  className="text-sm font-medium text-white hover:underline underline-offset-4 hover:text-[#FF3131]"
+                  href="#why-speakeasy"
+                  onClick={toggleMenu}
+                >
+                  Why SpeakEasy
+                </a>
+                <a
+                  className="text-sm font-medium text-white hover:underline underline-offset-4 hover:text-[#FF3131]"
+                  href="#pricing"
+                  onClick={toggleMenu}
+                >
+                  Pricing
+                </a>
+                <a
+                  className="text-sm font-medium text-white hover:underline underline-offset-4 hover:text-[#FF3131]"
+                  href="/login"
+                  onClick={toggleMenu}
+                >
+                  Login
+                </a>
+              </nav>
+            </div>
+          )}
+        </div>
+        <div className="relative z-10 py-24 md:py-32 lg:py-40">
           <div className="px-4 md:px-6">
             <div className="flex flex-col items-center space-y-6 text-center">
               <h1 className="text-3xl font-bold pb-1 sm:text-4xl md:text-5xl lg:text-6xl/none bg-gradient-to-r from-[#8C52FF] via-[#FF3131] to-[#FF3131] text-transparent bg-clip-text">
                 Speak Easy, Speak Freely
               </h1>
-              <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
+              <p className="mx-auto max-w-[700px] text-white md:text-xl">
                 Immersive, personalised, scenario-based language learning
                 powered by AI
               </p>
@@ -123,7 +133,9 @@ export default function LandingPage() {
               </a>
             </div>
           </div>
-        </section>
+        </div>
+      </header>
+      <main className="flex-1">
         <section
           className="w-full py-12 md:py-24 bg-[#8C52FF] text-white"
           id="features"
@@ -425,11 +437,11 @@ export default function LandingPage() {
           </div>
         </section>
       </main>
-      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
+      <footer className="flex flex-col sm:items-start gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
         <p className="text-xs text-gray-500 dark:text-gray-400">
           © 2024 SpeakEasy. All rights reserved.
         </p>
-        <nav className="sm:ml-auto flex gap-4 sm:gap-6">
+        <nav className="sm:ml-auto flex gap-4 sm:gap-6 items-start">
           <a
             className="text-xs text-[#8C52FF] hover:underline underline-offset-4 hover:text-[#FF3131]"
             href="#"
@@ -442,6 +454,14 @@ export default function LandingPage() {
           >
             Privacy
           </a>
+          <iframe
+            src="https://www.facebook.com/plugins/share_button.php?href=https%3A%2F%2Fspeakeasy-speakfreely.netlify.app%2F&layout&size&width=77&height=20&appId"
+            width="77"
+            height="20"
+            className="border-none overflow-hidden"
+            allowFullScreen={true}
+            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+          ></iframe>
         </nav>
       </footer>
     </div>
