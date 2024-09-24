@@ -1,14 +1,13 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, LoadingButton } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { apiUrl } from "@/main";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Mic, X, HelpCircle, AudioLines } from "lucide-react";
-import { useEffect, useState, useRef } from "react";
+import { AudioLines, HelpCircle, Mic, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Scenario } from "../dashboard/Home";
-import { LoadingButton } from "@/components/ui/button";
 import Navbar from "../navigation/Navbar";
 import Message from "./Message";
 import SuggestedReply from "./SuggestedReply";
@@ -19,23 +18,23 @@ export type ConversationResponse = {
   translated_text?: string;
   feedback?: string;
   score?: number;
-  utterance?: SpeechSynthesisUtterance
+  utterance?: SpeechSynthesisUtterance;
 };
 
 export type Suggestion = {
   text: string;
   translated_text: string;
-  utterance: SpeechSynthesisUtterance
+  utterance: SpeechSynthesisUtterance;
 };
 
 export function readAloud(utterance: SpeechSynthesisUtterance): void {
   utterance.lang = "zh-CN";
-  const synth : SpeechSynthesis = window.speechSynthesis;
+  const synth: SpeechSynthesis = window.speechSynthesis;
   synth.speak(utterance);
 }
 
-export function cancelReading() : void {
-  const synth : SpeechSynthesis = window.speechSynthesis;
+export function cancelReading(): void {
+  const synth: SpeechSynthesis = window.speechSynthesis;
   synth.cancel();
 }
 
@@ -54,17 +53,18 @@ export default function ConversationPage() {
       role: "assistant",
       text: scenario.first_message,
       translated_text: scenario.translated_first_message,
-      utterance: new SpeechSynthesisUtterance(scenario.first_message)
+      utterance: new SpeechSynthesisUtterance(scenario.first_message),
     },
   ]);
-  const [userInputs, setUserInputs] = useState("")
-  const [latestResponse, setLatestResponse] = useState<string>(scenario.first_message);
+  const [userInputs, setUserInputs] = useState("");
+  const [latestResponse, setLatestResponse] = useState<string>(
+    scenario.first_message
+  );
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [commentIdx, setCommentIdx] = useState(0);
 
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
-
 
   useEffect(() => {
     // Auto-scroll to the bottom when messages are updated
@@ -77,7 +77,7 @@ export default function ConversationPage() {
   }, [messages]);
 
   const [isSpeaking, setIsSpeaking] = useState(false);
- 
+
   const SpeechRecognition =
     window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRecognition) {
@@ -103,7 +103,10 @@ export default function ConversationPage() {
     const inputs = userInputs + text;
     setUserInputs(inputs);
     getResponse(inputs).then((res) => {
-      const message = {...res, utterance: new SpeechSynthesisUtterance(res.text)};
+      const message = {
+        ...res,
+        utterance: new SpeechSynthesisUtterance(res.text),
+      };
       setMessages((prevMessages) => [...prevMessages, message]);
       setLatestResponse(res.text);
       readAloud(message.utterance);
@@ -113,7 +116,7 @@ export default function ConversationPage() {
 
   recognition.onend = () => {
     setIsSpeaking(false);
-  }
+  };
 
   recognition.onerror = (event) => {
     if (event.error === "no-speech") {
@@ -167,11 +170,13 @@ export default function ConversationPage() {
       body: JSON.stringify(body),
     });
     const res = await response.json();
-    let suggestions : Suggestion[] = res["suggestions"];
-    suggestions = suggestions.map<Suggestion>(
-      (suggestion) => {
-        return {...suggestion, utterance: new SpeechSynthesisUtterance(suggestion.text)}
-      });
+    let suggestions: Suggestion[] = res["suggestions"];
+    suggestions = suggestions.map<Suggestion>((suggestion) => {
+      return {
+        ...suggestion,
+        utterance: new SpeechSynthesisUtterance(suggestion.text),
+      };
+    });
     setSuggestions(suggestions);
   }
 
@@ -185,11 +190,11 @@ export default function ConversationPage() {
     <div className="h-screen w-screen">
       <Navbar />
       <div className="flex flex-col space-y-4 items-start p-4 w-full h-[90%]">
-        <div className="flex space-x-6 w-full h-full">
-          <Card className="flex flex-col basis-3/5 items-center justify-center">
+        <div className="flex flex-col space-y-6 md:flex-row md:space-x-6 md:space-y-0 w-full h-full">
+          <Card className="flex flex-col md:basis-3/5 items-center justify-center">
             <CardContent
               ref={messageContainerRef}
-              className="basis-11/12 w-full p-6 space-y-4 overflow-y-auto"
+              className="basis-11/12 w-full p-6 space-y-4 min-h-[600px] overflow-y-auto"
             >
               {messages.map((message, index) => (
                 <div
@@ -228,34 +233,31 @@ export default function ConversationPage() {
               </div>
             ) : (
               <div className="flex basis-1/12 space-x-4 py-4 items-center">
-                {isSpeaking == true
-                ?
-                (<Button className="rounded-full text-black bg-white" disabled >
-                  Recording audio... &nbsp;
-                  <AudioLines size={18} />
-                </Button>)
-                : 
-                (
-                <>
-                <Button className="rounded-full" onClick={handleRecord}>
-                  Speak &nbsp;
-                  <Mic size={16} />
-                </Button>
-                <Button
-                  variant="secondary"
-                  className="bg-red-500 hover:bg-red-600 hover:border-red-600 text-white rounded-full"
-                  onClick={() => setIsEnded(true)}
-                >
-                  End &nbsp;
-                  <X size={16} />
-                </Button>
-                </>
-                )
-                }
+                {isSpeaking == true ? (
+                  <Button className="rounded-full text-black bg-white" disabled>
+                    Recording audio... &nbsp;
+                    <AudioLines size={18} />
+                  </Button>
+                ) : (
+                  <>
+                    <Button className="rounded-full" onClick={handleRecord}>
+                      Speak &nbsp;
+                      <Mic size={16} />
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      className="bg-red-500 hover:bg-red-600 hover:border-red-600 text-white rounded-full"
+                      onClick={() => setIsEnded(true)}
+                    >
+                      End &nbsp;
+                      <X size={16} />
+                    </Button>
+                  </>
+                )}
               </div>
             )}
           </Card>
-          <Card className="flex flex-col basis-2/5 space-y-4 pb-6">
+          <Card className="flex flex-col md:basis-2/5 space-y-4 pb-6">
             <Dialog>
               <DialogTrigger asChild>
                 <img
@@ -314,28 +316,41 @@ export default function ConversationPage() {
                     </p>
                   )}
                 </div>
-              ) :
-                (<div className="flex flex-col space-y-2 text-left">
-                  {suggestions.length === 0 ?
-                  (<LoadingButton
-                    className="flex items-center space-x-2"
-                    size="sm"
-                    variant="secondary"
-                    onClick={async () => {
-                      setIsLoadingSuggestions(true);
-                      await getSuggestions();
-                      setIsLoadingSuggestions(false);
-                    }}
-                    loading={isLoadingSuggestions}
-                  >
-                    {isLoadingSuggestions || <HelpCircle className="w-4 h-4 mr-1" />}
-                    Unsure of what to reply? Click here to get some suggestions!
-                  </LoadingButton>)
-                  : 
-                  (<h3 className="text-lg font-semibold">Suggested Replies</h3>)}
+              ) : (
+                <div className="flex flex-col space-y-2 text-left">
+                  {suggestions.length === 0 ? (
+                    <div className="flex flex-col space-y-4 items-center">
+                      <p className="text-sm">
+                        Unsure of what to reply? Click here to get some
+                        suggestions!
+                      </p>
+                      <LoadingButton
+                        className="flex items-center space-x-2"
+                        size="sm"
+                        variant="secondary"
+                        onClick={async () => {
+                          setIsLoadingSuggestions(true);
+                          await getSuggestions();
+                          setIsLoadingSuggestions(false);
+                        }}
+                        loading={isLoadingSuggestions}
+                      >
+                        {isLoadingSuggestions || (
+                          <HelpCircle className="w-4 h-4 mr-1" />
+                        )}
+                        Get Help
+                      </LoadingButton>
+                    </div>
+                  ) : (
+                    <h3 className="text-lg font-semibold">Suggested Replies</h3>
+                  )}
                   <div className="space-y-4">
                     {suggestions.map((suggestion, index) => (
-                      <SuggestedReply key={index} message={suggestion} utterance={suggestion.utterance}/>
+                      <SuggestedReply
+                        key={index}
+                        message={suggestion}
+                        utterance={suggestion.utterance}
+                      />
                     ))}
                   </div>
                 </div>

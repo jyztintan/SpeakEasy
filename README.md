@@ -8,20 +8,21 @@ Application: https://speakeasy-speakfreely.netlify.app/
 
 ## Daniel Kok
 
-- Matric Number:
+- Matric Number: A0234683Y
 - Contributions:
   - Designed frontend on Figma
   - Developed and designed landing page
-  - Developed Frontend pages
+  - Developed frontend application pages
 
 ## Justin Tan
 
-- Matric Number:
+- Matric Number: A0252153N
 - Contributions:
   - Prompt Engineering with Langchain
   - LLM Integration
 
 ## Lam Jiu Fong
+
 - Matric Number: A0255851Y
 - Contributions:
   - Set up MongoDB
@@ -29,7 +30,6 @@ Application: https://speakeasy-speakfreely.netlify.app/
   - Wrote APIs in Frontend to link Backend
   - Set up Speech Recognition
   - Set up Text-to-Speech
-    
 
 ## Bryan Ho
 
