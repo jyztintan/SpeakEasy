@@ -18,6 +18,7 @@ def feedback_to_user():
         Evaluate the latest user's input based on overall relevancy, coherence and complexity.
         Output constructive feedback on the user's input, 
         highlighting overall strengths or enhancements in English.
+        Users should be penalised for using English.
         Feedback should be concise in 2 sentences.
         """
 
@@ -47,6 +48,7 @@ def get_user_score():
             User Input: "{user_input}"
             Context: "{context}"
             Evaluate the latest user's input based on overall relevancy, coherence and complexity.
+            Users should be penalised for using English.
             Output only a numerical score between 0 and 100.
             """
     return PromptTemplate.from_template(prompt)
@@ -104,17 +106,29 @@ def generate_init_message():
     return PromptTemplate.from_template(prompt)
 
 
+def get_user_inputs():
+    prompt = """
+           You are a helpful language learning assistant. 
+           Extract ALL text output by the role 'User'. 
+           Do not include any text output by 'assistant'. 
+           Do not alter the phrasing of the user input in any way.
+           User Input: "{user_input}"
+           """
+    return PromptTemplate.from_template(prompt)
+
+
 def generate_final_feedback():
     prompt = """
-            You are a helpful language learning assistant. 
+            You are a helpful language learning assistant.
             User Input: "{user_input}"
             Context: "{context}"
-            Output constructive feedback on the overall user's inputs,
+            Output constructive feedback SOLELY about the user's inputs,
             highlighting overall strengths or enhancements:
+            - Users should only be using Chinese. Reproach for use of other languages.  
             - Relevancy
             - Coherence
             - Complexity
-            Feedback should be concise and at most 3 sentences without any special formatting.
+            Feedback should be concise in English and at most 3 sentences without any special formatting.
             """
 
     return PromptTemplate.from_template(prompt)
