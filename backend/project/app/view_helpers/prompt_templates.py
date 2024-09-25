@@ -109,8 +109,8 @@ def generate_final_feedback():
             You are a helpful language learning assistant. 
             User Input: "{user_input}"
             Context: "{context}"
-            Output constructive feedback on the overall user's inputs,
-            highlighting overall strengths or enhancements:
+            Output constructive feedback SOLELY based on the user's inputs
+            and NOT the assistant's inputs, highlighting overall strengths or enhancements:
             - Relevancy
             - Coherence
             - Complexity

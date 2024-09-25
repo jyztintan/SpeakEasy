@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, LoadingButton } from "@/components/ui/button";
+import { Button, buttonVariants, LoadingButton } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -23,9 +23,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Camera } from "lucide-react";
 import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import * as z from "zod";
 import { FetchScenariosContext } from "../dashboard/Home";
-import { buttonVariants } from "@/components/ui/button";
 
 const formSchema = z.object({
   name: z.string().max(150, "Max 150 characters"),
@@ -51,6 +51,7 @@ const apiUrl = import.meta.env.VITE_BACKEND_URL;
 export default function SnapPhoto({ isMobile }: { isMobile: boolean }) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("SpeakEasyUser") as string);
   const user_id = user["uid"];
@@ -76,7 +77,8 @@ export default function SnapPhoto({ isMobile }: { isMobile: boolean }) {
         method: "POST",
         body: formData,
       });
-      await response.json(); // wait for backend to return
+      const { scenario_id } = await response.json();
+      navigate(`/dashboard/scenario?id=${scenario_id}`);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -111,14 +113,18 @@ export default function SnapPhoto({ isMobile }: { isMobile: boolean }) {
               name="image"
               render={({ field: { onChange } }) => (
                 <FormItem>
-                  {isMobile ? (<FormLabel>Take a Picture</FormLabel>) : (<FormLabel>Upload Image</FormLabel>)}
+                  {isMobile ? (
+                    <FormLabel>Take a Picture</FormLabel>
+                  ) : (
+                    <FormLabel>Upload Image</FormLabel>
+                  )}
                   <FormControl>
                     <div>
                       <label
                         htmlFor="image-upload"
                         className={`block md:hidden ${buttonVariants({
                           variant: "outline",
-                          size: "sm"
+                          size: "sm",
                         })}`}
                       >
                         Open Camera
