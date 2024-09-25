@@ -215,7 +215,7 @@ export default function ConversationPage() {
           <Card className="flex flex-col md:basis-3/5 items-center justify-center">
             <CardContent
               ref={messageContainerRef}
-              className="basis-11/12 w-full p-6 space-y-4 min-h-[600px] overflow-y-auto"
+              className="basis-10/12 w-full p-6 space-y-4 min-h-[600px] overflow-y-auto"
             >
               {messages.map((message, index) => (
                 <div
@@ -253,7 +253,7 @@ export default function ConversationPage() {
                 </Button>
               </div>
             ) : (
-              <div className="flex basis-1/12 space-x-4 py-4 items-center">
+              <div className="flex basis-2/12 space-x-4 py-4 items-center">
                 {isSpeaking == true ? (
                   <Button className="rounded-full text-black bg-white" disabled>
                     Recording audio... &nbsp;
