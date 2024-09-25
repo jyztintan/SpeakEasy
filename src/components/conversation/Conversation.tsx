@@ -121,18 +121,17 @@ export default function ConversationPage() {
     setIsSpeaking(false);
   };
 
-  recognition.onerror = (event) => {
-    if (event.error === "no-speech") {
-      alert("No speech detected.");
-    } else {
-      alert(event.error);
-    }
+  recognition.onerror = () => {
+    alert("No speech detected.");
     setIsSpeaking(false);
   };
 
   async function handleRecord() {
     setIsSpeaking(true);
     recognition.start();
+    setTimeout(() => {
+      recognition.stop();
+    }, 10000); 
   }
 
   async function getResponse(text: string): Promise<ConversationResponse> {
@@ -270,6 +269,7 @@ export default function ConversationPage() {
                       variant="secondary"
                       className="bg-red-500 hover:bg-red-600 hover:border-red-600 text-white rounded-full"
                       onClick={() => {
+                        cancelReading();
                         setIsEnded(true);
                         getFeedback(userInputs);
                       }}
