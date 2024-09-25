@@ -101,8 +101,10 @@ export default function ConversationPage() {
     ]);
 
     // fetch AI's response and add to the conversation
-    const inputs = userInputs + text;
+    const inputs = messages.map(msg => "{ role: " + msg.role + ", text: " + msg.text + "}").join(" ")
+        + "{ role: \"user\", text:" + text + " }";
     setUserInputs(inputs);
+    console.log(inputs);
     getResponse(inputs).then((res) => {
       const message = {
         ...res,
