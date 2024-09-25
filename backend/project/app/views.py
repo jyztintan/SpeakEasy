@@ -33,7 +33,7 @@ def create_user(request):
         )
     data = request.data.copy()
     # add fixed scenario ids
-    data["scenarios_id"] = [1, 2, 3]
+    data["scenarios_id"] = list(range(1, 8))
     serializer = UserSerializer(data=data)
     if serializer.is_valid():
         # insert new user into user collection

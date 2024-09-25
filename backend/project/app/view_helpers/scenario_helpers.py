@@ -17,8 +17,8 @@ from google.cloud import storage
 load_dotenv()  # Need to call to load env variables
 API_KEY = os.getenv("OPENAI_API_KEY")
 MODEL = "gpt-4o-mini"
-MAX_TOKENS = 200
-TEMPERATURE = 0.8  # Limit randomness of response
+MAX_TOKENS = 300
+TEMPERATURE = 0.2  # Limit randomness of response
 llm = ChatOpenAI(api_key=API_KEY, temperature=TEMPERATURE, model=MODEL, max_tokens=MAX_TOKENS)
 prompts = {"refine_context":refine_context(),
            "generate_init_message":generate_init_message(),
