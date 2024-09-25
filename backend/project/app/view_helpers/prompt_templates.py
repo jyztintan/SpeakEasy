@@ -33,7 +33,7 @@ def response_to_user():
         If the user's input is irrelevant to the context or in English, you should reproach them and
         remind them to continue the conversation in Chinese, focusing on maintaining relevance to the topic.
         Aim to engage the user by concluding your response with a question, encouraging a continued dialogue.
-        Response should be not be long.
+        Response should not be long.
         """
 
     return PromptTemplate.from_template(prompt)
@@ -57,17 +57,18 @@ def conversation_suggestion():
             You are a helpful language learning assistant. 
             Provide a structured JSON response containing the following fields 
             based on the user's input and strictly nothing else. 
+            Suggestions should be at most 1 sentence.
             No ```json declaration needed, just the JSON object.
 
             Previous Input: "{prev_message}"
             Context:  "{context}"
 
             Requirements:
-            - "first": A meaningful and contextually appropriate response to the Previous Input in Chinese.
+            - "first": A simple and relevant response to the Previous Input in Chinese.
             - "first_en": A direct translation of the first suggestion in English.
-            - "second": A second meaningful and contextually appropriate response to the Previous Input in Chinese.
+            - "second": A meaningful and contextually appropriate response to the Previous Input in Chinese.
             - "second_en": A direct translation of the second suggestion in English.
-            - "third": A third meaningful and contextually appropriate response to the Previous Input in Chinese.
+            - "third": A complex and contextually relevant response to the Previous Input in Chinese.
             - "third_en": A direct translation of the third suggestion in English.
 
             return a list of dictionaries

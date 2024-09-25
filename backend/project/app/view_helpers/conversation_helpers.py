@@ -16,9 +16,9 @@ from ..serializer import (
 load_dotenv()  # Need to call to load env variables
 API_KEY = os.getenv("OPENAI_API_KEY")
 MODEL = "gpt-4o-mini"
-MAX_TOKENS = 400
+MAX_TOKENS = 500
 TEMPERATURE = 0.8  # Higher temperature for more 'interesting' responses
-llm = ChatOpenAI(api_key=API_KEY, temperature=TEMPERATURE, model=MODEL, max_tokens=MAX_TOKENS)
+llm = ChatOpenAI(api_key=API_KEY, temperature=TEMPERATURE, model=MODEL, max_tokens=MAX_TOKENS, presencePenalty=0.3)
 prompts = {"response_to_user":response_to_user(), "feedback_to_user":feedback_to_user(),
            "translate_cn":translate_cn(), "get_user_score":get_user_score(),
            "conversation_suggestion": conversation_suggestion(), "generate_final_feedback": generate_final_feedback()}
@@ -81,6 +81,7 @@ def response_to_get_help(request):
             status=status.HTTP_400_BAD_REQUEST,
         )
     response = generate_openai_suggestions(prev_message, context_text)
+    print(response)
     try:
         response_data = json.loads(response)
     except json.JSONDecodeError:
