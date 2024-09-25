@@ -31,8 +31,10 @@ def response_to_user():
             User Input: "{user_input}"
             Context: "{context}"
             Based on the user input and context, provide a meaningful and contextually appropriate response in Chinese.
+            
             If the user's input is irrelevant to the context or in English, you should reproach them and
             remind them to continue the conversation in Chinese, focusing on maintaining relevance to the topic.
+            
             If the context objective is not met,
             encourage user by concluding your response with a guiding question.
             If context objective is met, conclude appropriately without further questions.
@@ -80,10 +82,15 @@ def conversation_suggestion():
 
 def refine_context():
     prompt = """
-            You are a helpful language learning assistant. 
+            You are a helpful language learning assistant.
+             
             User's initial context: '{context}'
+            
             Output a refined version of the user's initial context that is coherent and understandable.
-            Reframe the context clearly as an objective task without any special formatting.
+            Reframe the context clearly as an objective task maintaining plain text without any special formatting.
+
+            If the user's initial context is not comprehensible, use the default context:
+            "Discuss with a friend about how your day has been."
             """
 
     return PromptTemplate.from_template(prompt)
@@ -120,14 +127,17 @@ def get_user_inputs():
 def generate_final_feedback():
     prompt = """
             You are a helpful language learning assistant.
+            
             User Input: "{user_input}"
             Context: "{context}"
+            
             Output constructive feedback SOLELY about the user's inputs,
             highlighting overall strengths or enhancements:
             - Users should only be using Chinese. Reproach for use of other languages.  
             - Relevancy
             - Coherence
             - Complexity
+            
             Feedback should be concise in English and at most 3 sentences without any special formatting.
             """
 
