@@ -19,7 +19,9 @@ Application: https://speakeasy-speakfreely.netlify.app/
 - Matric Number: A0252153N
 - Contributions:
   - Prompt Engineering with Langchain
-  - LLM Integration
+  - Integrate LLM for AI Responses, Context Refinement, and User Feedback
+  - Creation of Fixed Scenarios
+  - LLM and API Testing
 
 ## Lam Jiu Fong
 
