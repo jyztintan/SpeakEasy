@@ -186,27 +186,27 @@ export default function LandingPage() {
                 SpeakEasy
               </span>
             </h2>
-            <div className="flex flex-col space-y-16 items-center">
+            {/* <div className="flex flex-col space-y-16 items-center">
               <div className="flex flex-col md:flex-row space-x-0 md:space-x-32 space-y-16 md:space-y-0 items-center">
                 <div className="flex flex-col items-center space-y-4">
                   <Globe2 size={36} />
-                  <h3 className="text-xl font-bold">Contextual Learning</h3>
+                  <h3 className="text-xl font-bold">Customise your own scenario</h3>
                   <p className="font-medium text-center md:max-w-96">
                     SpeakEasy immerses you in real-world scenarios, so you learn
                     vocabulary and grammar in context
                   </p>
                 </div>
                 <img
-                  src="/people.png"
+                  src="/customise.png"
                   alt="People Chatting"
-                  className="rounded-lg object-cover h-80"
+                  className="rounded-lg object-cover h-80 w-300"
                 />
               </div>
               <div className="flex flex-col-reverse md:flex-row space-x-0 md:space-x-32 items-center">
                 <img
-                  src="/people.png"
+                  src="/convo6.png"
                   alt="People Chatting"
-                  className="rounded-lg object-cover h-80"
+                  className="rounded-lg object-cover h-80 w-300"
                 />
                 <div className="flex flex-col items-center space-y-4 mb-16 md:mb-0">
                   <MessageCircle size={36} />
@@ -222,18 +222,21 @@ export default function LandingPage() {
               <div className="flex flex-col md:flex-row space-x-0 md:space-x-32 space-y-16 md:space-y-0 items-center">
                 <div className="flex flex-col items-center space-y-4">
                   <Zap size={36} />
-                  <h3 className="text-xl font-bold">Engaging Content</h3>
+                  <h3 className="text-xl font-bold">Personalized Feedbacks</h3>
                   <p className="font-medium text-center md:max-w-96">
                     SpeakEasy provides dynamic, AI-driven lessons that evolve
                     with you, ensuring you never get bored
                   </p>
                 </div>
                 <img
-                  src="/people.png"
+                  src="/fb4.png"
                   alt="People Chatting"
                   className="rounded-lg object-cover h-80"
                 />
               </div>
+            </div> */}
+            <div className="flex item-center mx-auto">
+            <iframe className="md:w-[700px] md:min-h-96 lg:w-[900px] lg:min-h-[500px]" src="https://www.youtube.com/embed/NoLF7Dlu5mc?si=bNnch8XYekAazUSD" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
             </div>
           </div>
         </section>
