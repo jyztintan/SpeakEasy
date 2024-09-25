@@ -81,22 +81,30 @@ def response_to_get_help(request):
             status=status.HTTP_400_BAD_REQUEST,
         )
     response = generate_openai_suggestions(prev_message, context_text)
-    print(response)
+    output = {"suggestions": response}
+    return JsonResponse(output)
+
+
+def generate_openai_suggestions(prev_message, context_text):
+    suggestions = []
+
+    prompt = prompts["conversation_suggestion"]
+    chain = prompt | llm
+    response = chain.invoke({"prev_message": prev_message, "context": context_text}).content
     try:
-        response_data = json.loads(response)
+        response = json.loads(response)
     except json.JSONDecodeError:
         return Response(
             {"error": "Invalid response from OpenAI"},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
-
-    return JsonResponse(response_data)
-
-
-def generate_openai_suggestions(prev_message, context_text):
-    prompt = prompts["conversation_suggestion"]
+    prompt = prompts["translate_cn"]
     chain = prompt | llm
-    return chain.invoke({"prev_message": prev_message, "context": context_text}).content
+    for suggestion in response:
+        translated = chain.invoke({"chinese": suggestion}).content
+        d = {"text": suggestion, "translated_text": translated}
+        suggestions.append(d)
+    return suggestions
 
 
 def aggregate_feedback(request):
