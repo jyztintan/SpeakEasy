@@ -1,9 +1,13 @@
 # this is just a draft, just for setting up connection to mongodb atlas
-
+import os
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
+from dotenv import load_dotenv
 
-uri = "mongodb+srv://cs3216a3g1:Oi1ybUKU2jsHhAvK@assignment-3.sygvy.mongodb.net/?retryWrites=true&w=majority&appName=Assignment-3&connectTimeoutMS=30000&socketTimeoutMS=30000"
+load_dotenv()
+mongodb_key = os.getenv('MONGODB_KEY')
+
+uri = f'mongodb+srv://new_user:{mongodb_key}@assignment-3.sygvy.mongodb.net/?retryWrites=true&w=majority&appName=Assignment-3&connectTimeoutMS=30000&socketTimeoutMS=30000'
 
 # Create a new client and connect to the server
 client = MongoClient(uri, server_api=ServerApi('1'))

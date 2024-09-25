@@ -25,6 +25,7 @@ import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { FetchScenariosContext } from "../dashboard/Home";
+import { buttonVariants } from "@/components/ui/button";
 
 const formSchema = z.object({
   name: z.string().max(150, "Max 150 characters"),
@@ -110,14 +111,27 @@ export default function SnapPhoto({ isMobile }: { isMobile: boolean }) {
               name="image"
               render={({ field: { onChange } }) => (
                 <FormItem>
-                  <FormLabel>Upload Image</FormLabel>
+                  {isMobile ? (<FormLabel>Take a Picture</FormLabel>) : (<FormLabel>Upload Image</FormLabel>)}
                   <FormControl>
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      capture="environment"
-                      onChange={(e) => onChange(e.target.files)}
-                    />
+                    <div>
+                      <label
+                        htmlFor="image-upload"
+                        className={`block md:hidden ${buttonVariants({
+                          variant: "outline",
+                          size: "sm"
+                        })}`}
+                      >
+                        Open Camera
+                      </label>
+                      <Input
+                        id="image-upload"
+                        type="file"
+                        className="hidden md:block"
+                        accept="image/*"
+                        capture="environment"
+                        onChange={(e) => onChange(e.target.files)}
+                      />
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

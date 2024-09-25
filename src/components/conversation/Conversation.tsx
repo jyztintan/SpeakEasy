@@ -63,7 +63,7 @@ export default function ConversationPage() {
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [commentIdx, setCommentIdx] = useState(0);
-  const [feedbackText, setFeedbackText] = useState('');
+  const [feedbackText, setFeedbackText] = useState("");
 
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -120,18 +120,17 @@ export default function ConversationPage() {
     setIsSpeaking(false);
   };
 
-  recognition.onerror = (event) => {
-    if (event.error === "no-speech") {
-      alert("No speech detected.");
-    } else {
-      alert(event.error);
-    }
+  recognition.onerror = () => {
+    alert("No speech detected.");
     setIsSpeaking(false);
   };
 
   async function handleRecord() {
     setIsSpeaking(true);
     recognition.start();
+    setTimeout(() => {
+      recognition.stop();
+    }, 10000); 
   }
 
   async function getResponse(text: string): Promise<ConversationResponse> {
@@ -183,7 +182,6 @@ export default function ConversationPage() {
     setSuggestions(suggestions);
   }
 
-
   async function getFeedback(text: string): Promise<void> {
     const body = {
       user_id: user_id,
@@ -203,7 +201,6 @@ export default function ConversationPage() {
     setFeedbackText(json.text);
   }
 
-
   // might be called twice in dev mode, but only once in prod mode due to StrictMode,
   // read here: https://www.dhiwise.com/post/resolving-useeffect-running-twice-a-comprehensive-guide
   useEffect(() => {
@@ -218,7 +215,7 @@ export default function ConversationPage() {
           <Card className="flex flex-col md:basis-3/5 items-center justify-center">
             <CardContent
               ref={messageContainerRef}
-              className="basis-11/12 w-full p-6 space-y-4 min-h-[600px] overflow-y-auto"
+              className="basis-10/12 w-full p-6 space-y-4 min-h-[600px] overflow-y-auto"
             >
               {messages.map((message, index) => (
                 <div
@@ -256,7 +253,7 @@ export default function ConversationPage() {
                 </Button>
               </div>
             ) : (
-              <div className="flex basis-1/12 space-x-4 py-4 items-center">
+              <div className="flex basis-2/12 space-x-4 py-4 items-center">
                 {isSpeaking == true ? (
                   <Button className="rounded-full text-black bg-white" disabled>
                     Recording audio... &nbsp;
@@ -272,6 +269,7 @@ export default function ConversationPage() {
                       variant="secondary"
                       className="bg-red-500 hover:bg-red-600 hover:border-red-600 text-white rounded-full"
                       onClick={() => {
+                        cancelReading();
                         setIsEnded(true);
                         getFeedback(userInputs);
                       }}
@@ -293,11 +291,11 @@ export default function ConversationPage() {
                   className="rounded-t-lg h-48 object-cover hover:cursor-pointer"
                 />
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="bg-transparent border-transparent shadow-none md:scale-150">
                 <img
                   src={scenario.image}
                   alt="Scenario Image"
-                  className="rounded-t-lg hover:cursor-pointer p-10"
+                  className="pr-4"
                 />
               </DialogContent>
             </Dialog>
@@ -308,53 +306,51 @@ export default function ConversationPage() {
               </div>
               <Separator />
               {isEnded ? (
-                  <div className="flex flex-col space-y-2 text-left">
-                    <h3 className="text-lg font-semibold">
-                      Conversation Feedback
-                    </h3>
-                    <div className="flex space-x-8">
-                      <p>Average Score</p>
-                      <Badge>
-                        {Math.round(
-                            messages.reduce((prev, curr) => {
-                              if (curr.score) {
-                                return curr.score + prev;
-                              } else {
-                                return prev;
-                              }
-                            }, 0) /
-                            ((messages.length - 1)/2)
-                        )}{" "}
-                        / 100
-                      </Badge>
-                    </div>
-                    <div className="flex space-x-8">
-                      <p>
-                        {feedbackText}
-                      </p>
-                    </div>
-                    <h4 className="font-semibold mt-4">Individual Comment</h4>
-                    {commentIdx % 2 === 1 ? (
-                        <div className="space-y-2">
-                          <p className="italic text-sm">
-                            "{messages[commentIdx].text}"
-                          </p>
-                          <p>{messages[commentIdx + 1].feedback}</p>
-                        </div>
-                    ) : (
-                        <p>
-                          Click on a the 'Show Feedback' button of each message to
-                          view the specific improvements for that message.
-                        </p>
-                    )}
+                <div className="flex flex-col space-y-2 text-left">
+                  <h3 className="text-lg font-semibold">
+                    Conversation Feedback
+                  </h3>
+                  <div className="flex space-x-8">
+                    <p>Average Score</p>
+                    <Badge>
+                      {Math.round(
+                        messages.reduce((prev, curr) => {
+                          if (curr.score) {
+                            return curr.score + prev;
+                          } else {
+                            return prev;
+                          }
+                        }, 0) /
+                          ((messages.length - 1) / 2)
+                      )}{" "}
+                      / 100
+                    </Badge>
                   </div>
+                  <div className="flex space-x-8">
+                    <p>{feedbackText}</p>
+                  </div>
+                  <h4 className="font-semibold mt-4">Individual Comment</h4>
+                  {commentIdx % 2 === 1 ? (
+                    <div className="space-y-2">
+                      <p className="italic text-sm">
+                        "{messages[commentIdx].text}"
+                      </p>
+                      <p>{messages[commentIdx + 1].feedback}</p>
+                    </div>
+                  ) : (
+                    <p>
+                      Click on a the 'Show Feedback' button of each message to
+                      view the specific improvements for that message.
+                    </p>
+                  )}
+                </div>
               ) : (
-                  <div className="flex flex-col space-y-2 text-left">
+                <div className="flex flex-col space-y-2 text-left">
                   {suggestions.length === 0 ? (
                     <div className="flex flex-col space-y-4 items-center">
                       <p className="text-sm">
-                        Unsure of what to reply? Click here to get some
-                        suggestions!
+                        Unsure of what to reply? Click the button below to get
+                        some suggestions!
                       </p>
                       <LoadingButton
                         className="flex items-center space-x-2"

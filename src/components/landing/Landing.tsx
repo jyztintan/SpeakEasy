@@ -23,102 +23,112 @@ export default function LandingPage() {
 
   return (
     <div className="flex flex-col min-h-screen w-screen">
-      <header className="px-4 lg:px-6 h-14 pt-4 flex items-center">
-        <div>
-          <a href="/" className="text-2xl font-bold">
-            <img src="/logo.svg" alt="logo" className="h-10" />
-          </a>
-          <span className="sr-only">SpeakEasy</span>
+      <header className="relative">
+        <div className="absolute inset-0 z-0">
+          <img
+            src="/people.png"
+            alt="Background"
+            className="w-full h-full object-cover blur-[1px]"
+          />
+          <div className="absolute inset-0 bg-black/60" />
         </div>
-        <nav className="hidden ml-auto md:flex gap-4 sm:gap-6">
-          <a
-            className="text-[#8C52FF] font-medium hover:underline underline-offset-4 hover:text-[#FF3131]"
-            href="#features"
-          >
-            Features
-          </a>
-          <a
-            className="text-[#8C52FF] font-medium hover:underline underline-offset-4 hover:text-[#FF3131]"
-            href="#how-it-works"
-          >
-            How It Works
-          </a>
-          <a
-            className="text-[#8C52FF] font-medium hover:underline underline-offset-4 hover:text-[#FF3131]"
-            href="#why-speakeasy"
-          >
-            Why SpeakEasy
-          </a>
-          <a
-            className="text-[#8C52FF] font-medium hover:underline underline-offset-4 hover:text-[#FF3131]"
-            href="#pricing"
-          >
-            Pricing
-          </a>
-          <a
-            className="text-[#8C52FF] font-medium hover:underline underline-offset-4 hover:text-[#FF3131]"
-            href="/login"
-          >
-            Login
-          </a>
-        </nav>
-        <Button
-          className="md:hidden ml-auto size-8 p-0"
-          onClick={toggleMenu}
-          variant="outline"
-        >
-          {isMenuOpen ? <X size={16} /> : <Menu size={16} />}
-        </Button>
-        {isMenuOpen && (
-          <div className="md:hidden absolute top-14 left-0 right-0 bg-black/90 p-4">
-            <nav className="flex flex-col gap-4">
+        <div className="relative z-10 px-4 lg:px-6 pt-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <a href="/" className="text-2xl font-bold">
+                <img src="/logo.svg" alt="logo" className="h-10" />
+              </a>
+              <span className="sr-only">SpeakEasy</span>
+            </div>
+            <nav className="hidden ml-auto md:flex gap-4 sm:gap-6">
               <a
-                className="text-sm font-medium text-white hover:underline underline-offset-4 hover:text-[#FF3131]"
+                className="text-white font-medium hover:underline underline-offset-4 hover:text-[#FF3131]"
                 href="#features"
-                onClick={toggleMenu}
               >
                 Features
               </a>
               <a
-                className="text-sm font-medium text-white hover:underline underline-offset-4 hover:text-[#FF3131]"
+                className="text-white font-medium hover:underline underline-offset-4 hover:text-[#FF3131]"
                 href="#how-it-works"
-                onClick={toggleMenu}
               >
                 How It Works
               </a>
               <a
-                className="text-sm font-medium text-white hover:underline underline-offset-4 hover:text-[#FF3131]"
+                className="text-white font-medium hover:underline underline-offset-4 hover:text-[#FF3131]"
                 href="#why-speakeasy"
-                onClick={toggleMenu}
               >
                 Why SpeakEasy
               </a>
               <a
-                className="text-sm font-medium text-white hover:underline underline-offset-4 hover:text-[#FF3131]"
+                className="text-white font-medium hover:underline underline-offset-4 hover:text-[#FF3131]"
                 href="#pricing"
-                onClick={toggleMenu}
               >
                 Pricing
               </a>
               <a
-                className="text-sm font-medium text-white hover:underline underline-offset-4 hover:text-[#FF3131]"
+                className="text-white font-medium hover:underline underline-offset-4 hover:text-[#FF3131]"
                 href="/login"
-                onClick={toggleMenu}
               >
                 Login
               </a>
             </nav>
+            <Button
+              className="md:hidden ml-auto size-8 p-0"
+              onClick={toggleMenu}
+              variant="secondary"
+            >
+              {isMenuOpen ? <X size={16} /> : <Menu size={16} />}
+            </Button>
           </div>
-        )}
-      </header>
-      <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
+          {isMenuOpen && (
+            <div className="md:hidden absolute top-14 left-0 right-0 bg-black/90 p-4">
+              <nav className="flex flex-col gap-4">
+                <a
+                  className="text-sm font-medium text-white hover:underline underline-offset-4 hover:text-[#FF3131]"
+                  href="#features"
+                  onClick={toggleMenu}
+                >
+                  Features
+                </a>
+                <a
+                  className="text-sm font-medium text-white hover:underline underline-offset-4 hover:text-[#FF3131]"
+                  href="#how-it-works"
+                  onClick={toggleMenu}
+                >
+                  How It Works
+                </a>
+                <a
+                  className="text-sm font-medium text-white hover:underline underline-offset-4 hover:text-[#FF3131]"
+                  href="#why-speakeasy"
+                  onClick={toggleMenu}
+                >
+                  Why SpeakEasy
+                </a>
+                <a
+                  className="text-sm font-medium text-white hover:underline underline-offset-4 hover:text-[#FF3131]"
+                  href="#pricing"
+                  onClick={toggleMenu}
+                >
+                  Pricing
+                </a>
+                <a
+                  className="text-sm font-medium text-white hover:underline underline-offset-4 hover:text-[#FF3131]"
+                  href="/login"
+                  onClick={toggleMenu}
+                >
+                  Login
+                </a>
+              </nav>
+            </div>
+          )}
+        </div>
+        <div className="relative z-10 py-24 md:py-32 lg:py-40">
           <div className="px-4 md:px-6">
             <div className="flex flex-col items-center space-y-6 text-center">
               <h1 className="text-3xl font-bold pb-1 sm:text-4xl md:text-5xl lg:text-6xl/none bg-gradient-to-r from-[#8C52FF] via-[#FF3131] to-[#FF3131] text-transparent bg-clip-text">
                 Speak Easy, Speak Freely
               </h1>
-              <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
+              <p className="mx-auto max-w-[700px] text-white md:text-xl">
                 Immersive, personalised, scenario-based language learning
                 powered by AI
               </p>
@@ -129,7 +139,9 @@ export default function LandingPage() {
               </a>
             </div>
           </div>
-        </section>
+        </div>
+      </header>
+      <main className="flex-1">
         <section
           className="w-full py-12 md:py-24 bg-[#8C52FF] text-white"
           id="features"
@@ -174,27 +186,27 @@ export default function LandingPage() {
                 SpeakEasy
               </span>
             </h2>
-            <div className="flex flex-col space-y-16 items-center">
+            {/* <div className="flex flex-col space-y-16 items-center">
               <div className="flex flex-col md:flex-row space-x-0 md:space-x-32 space-y-16 md:space-y-0 items-center">
                 <div className="flex flex-col items-center space-y-4">
                   <Globe2 size={36} />
-                  <h3 className="text-xl font-bold">Contextual Learning</h3>
+                  <h3 className="text-xl font-bold">Customise your own scenario</h3>
                   <p className="font-medium text-center md:max-w-96">
                     SpeakEasy immerses you in real-world scenarios, so you learn
                     vocabulary and grammar in context
                   </p>
                 </div>
                 <img
-                  src="/people.png"
+                  src="/customise.png"
                   alt="People Chatting"
-                  className="rounded-lg object-cover h-80"
+                  className="rounded-lg object-cover h-80 w-300"
                 />
               </div>
               <div className="flex flex-col-reverse md:flex-row space-x-0 md:space-x-32 items-center">
                 <img
-                  src="/people.png"
+                  src="/convo6.png"
                   alt="People Chatting"
-                  className="rounded-lg object-cover h-80"
+                  className="rounded-lg object-cover h-80 w-300"
                 />
                 <div className="flex flex-col items-center space-y-4 mb-16 md:mb-0">
                   <MessageCircle size={36} />
@@ -210,18 +222,21 @@ export default function LandingPage() {
               <div className="flex flex-col md:flex-row space-x-0 md:space-x-32 space-y-16 md:space-y-0 items-center">
                 <div className="flex flex-col items-center space-y-4">
                   <Zap size={36} />
-                  <h3 className="text-xl font-bold">Engaging Content</h3>
+                  <h3 className="text-xl font-bold">Personalized Feedbacks</h3>
                   <p className="font-medium text-center md:max-w-96">
                     SpeakEasy provides dynamic, AI-driven lessons that evolve
                     with you, ensuring you never get bored
                   </p>
                 </div>
                 <img
-                  src="/people.png"
+                  src="/fb4.png"
                   alt="People Chatting"
                   className="rounded-lg object-cover h-80"
                 />
               </div>
+            </div> */}
+            <div className="flex item-center mx-auto">
+            <iframe className="md:w-[700px] md:min-h-96 lg:w-[900px] lg:min-h-[500px]" src="https://www.youtube.com/embed/NoLF7Dlu5mc?si=bNnch8XYekAazUSD" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
             </div>
           </div>
         </section>
@@ -440,6 +455,7 @@ export default function LandingPage() {
                 value={emailText}
                 onChange={(e) => setEmailText(e.target.value)}
               />
+              <div className="pb-3"></div>
               <Textarea
                 className="mx-auto max-w-[700px] md:text-2xl text-black"
                 placeholder="Message Body"
@@ -481,11 +497,11 @@ export default function LandingPage() {
           </div>
         </section>
       </main>
-      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
+      <footer className="flex flex-col sm:items-start gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
         <p className="text-xs text-gray-500 dark:text-gray-400">
           © 2024 SpeakEasy. All rights reserved.
         </p>
-        <nav className="sm:ml-auto flex gap-4 sm:gap-6">
+        <nav className="sm:ml-auto flex gap-4 sm:gap-6 items-start">
           <a
             className="text-xs text-[#8C52FF] hover:underline underline-offset-4 hover:text-[#FF3131]"
             href="#"
@@ -498,6 +514,14 @@ export default function LandingPage() {
           >
             Privacy
           </a>
+          <iframe
+            src="https://www.facebook.com/plugins/share_button.php?href=https%3A%2F%2Fspeakeasy-speakfreely.netlify.app%2F&layout&size&width=77&height=20&appId"
+            width="77"
+            height="20"
+            className="border-none overflow-hidden"
+            allowFullScreen={true}
+            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+          ></iframe>
         </nav>
       </footer>
     </div>
