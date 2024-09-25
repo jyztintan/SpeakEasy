@@ -107,3 +107,16 @@ def generate_init_message():
             """
 
     return PromptTemplate.from_template(prompt)
+
+
+def generate_final_feedback():
+    prompt = """
+            You are a helpful language learning assistant. 
+            User Input: "{user_input}"
+            Context: "{context}"
+            Output constructive feedback on the overall user's input, 
+            highlighting strengths and areas for improvement based on relevancy, coherence, and complexity.
+            Feedback should be concise and at most 3 sentences without any special formatting.
+            """
+
+    return PromptTemplate.from_template(prompt)

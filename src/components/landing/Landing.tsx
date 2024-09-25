@@ -1,4 +1,6 @@
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   BookOpen,
   Camera,
@@ -14,7 +16,11 @@ import { useState } from "react";
 
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [emailText, setEmailText] = useState("");
+  const [messageText, setMessageText] = useState("");
+
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
   return (
     <div className="flex flex-col min-h-screen w-screen">
       <header className="relative">
@@ -312,7 +318,7 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
-        <section className="w-full pt-12 md:pt-24" id="pricing">
+        <section className="w-full pt-12 pb-10 md:pt-24 md:pb-10" id="pricing">
           <div className="px-4 md:px-6 lg:px-16">
             <h2 className="text-3xl font-bold sm:text-4xl md:text-5xl text-center mb-8 md:mb-16">
               Choose Your Plan
@@ -335,7 +341,9 @@ export default function LandingPage() {
                     </li>
                   </ul>
                 </div>
-                <Button variant="outline">Get Started</Button>
+                <a href="/login">
+                  <Button variant="outline">Get Started</Button>
+                </a>
               </div>
               <div className="flex flex-col justify-between space-y-8 p-6 bg-white shadow-lg rounded-lg dark:bg-gray-800">
                 <div className="flex flex-col">
@@ -358,7 +366,9 @@ export default function LandingPage() {
                     </li>
                   </ul>
                 </div>
-                <Button>Choose Standard</Button>
+                <a href="#contact">
+                  <Button>Choose Standard</Button>
+                </a>
               </div>
               <div className="flex flex-col justify-between space-y-8 p-6 bg-white shadow-lg rounded-lg dark:bg-gray-800 border-2 border-primary">
                 <div className="flex flex-col">
@@ -385,7 +395,9 @@ export default function LandingPage() {
                     </li>
                   </ul>
                 </div>
-                <Button>Choose Premium</Button>
+                <a href="#contact">
+                  <Button>Choose Premium</Button>
+                </a>
               </div>
               <div className="flex flex-col justify-between space-y-8 p-6 bg-white shadow-lg rounded-lg dark:bg-gray-800">
                 <div className="flex flex-col">
@@ -412,7 +424,51 @@ export default function LandingPage() {
                     </li>
                   </ul>
                 </div>
-                <Button variant="outline">Contact Sales</Button>
+                <a href="#contact">
+                  <Button variant="outline">Contact Sales</Button>
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section
+          className="w-full py-12 md:py-24 bg-[#8C52FF] text-white"
+          id="contact"
+        >
+          <div className="flex flex-col space-y-12 px-4 md:px-6">
+            <div className="flex flex-col items-center space-y-4 text-center">
+              <div className="space-y-8 pb-10">
+                <h2 className="text-3xl font-bold sm:text-4xl md:text-5xl">
+                  Reach Out To Us
+                </h2>
+                <p className="mx-auto max-w-[700px] md:text-2xl">
+                  Have some feedback or questions regarding sales? Contact us
+                  anytime!
+                </p>
+              </div>
+              <Input
+                className="mx-auto max-w-[700px] md:text-2xl text-black"
+                placeholder="Email"
+                value={emailText}
+                onChange={(e) => setEmailText(e.target.value)}
+              />
+              <Textarea
+                className="mx-auto max-w-[700px] md:text-2xl text-black"
+                placeholder="Message Body"
+                value={messageText}
+                onChange={(e) => setMessageText(e.target.value)}
+              />
+              <div className="pt-12">
+                <Button
+                  size="lg"
+                  className="font-semibold text-lg"
+                  onClick={() => {
+                    setEmailText("");
+                    setMessageText("");
+                  }}
+                >
+                  Send Message
+                </Button>
               </div>
             </div>
           </div>
