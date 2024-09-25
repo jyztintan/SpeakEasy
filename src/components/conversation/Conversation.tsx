@@ -63,7 +63,7 @@ export default function ConversationPage() {
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [commentIdx, setCommentIdx] = useState(0);
-  const [feedbackText, setFeedbackText] = useState('');
+  const [feedbackText, setFeedbackText] = useState("");
 
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -182,7 +182,6 @@ export default function ConversationPage() {
     setSuggestions(suggestions);
   }
 
-
   async function getFeedback(text: string): Promise<void> {
     const body = {
       user_id: user_id,
@@ -201,7 +200,6 @@ export default function ConversationPage() {
     const json = await response.json();
     setFeedbackText(json.text);
   }
-
 
   // might be called twice in dev mode, but only once in prod mode due to StrictMode,
   // read here: https://www.dhiwise.com/post/resolving-useeffect-running-twice-a-comprehensive-guide
@@ -293,11 +291,11 @@ export default function ConversationPage() {
                   className="rounded-t-lg h-48 object-cover hover:cursor-pointer"
                 />
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="bg-transparent border-transparent shadow-none md:scale-150">
                 <img
                   src={scenario.image}
                   alt="Scenario Image"
-                  className="rounded-t-lg hover:cursor-pointer p-10"
+                  className="pr-4"
                 />
               </DialogContent>
             </Dialog>
@@ -308,53 +306,51 @@ export default function ConversationPage() {
               </div>
               <Separator />
               {isEnded ? (
-                  <div className="flex flex-col space-y-2 text-left">
-                    <h3 className="text-lg font-semibold">
-                      Conversation Feedback
-                    </h3>
-                    <div className="flex space-x-8">
-                      <p>Average Score</p>
-                      <Badge>
-                        {Math.round(
-                            messages.reduce((prev, curr) => {
-                              if (curr.score) {
-                                return curr.score + prev;
-                              } else {
-                                return prev;
-                              }
-                            }, 0) /
-                            (messages.length / 2)
-                        )}{" "}
-                        / 100
-                      </Badge>
-                    </div>
-                    <div className="flex space-x-8">
-                      <p>
-                        {feedbackText}
-                      </p>
-                    </div>
-                    <h4 className="font-semibold mt-4">Individual Comment</h4>
-                    {commentIdx % 2 === 1 ? (
-                        <div className="space-y-2">
-                          <p className="italic text-sm">
-                            "{messages[commentIdx].text}"
-                          </p>
-                          <p>{messages[commentIdx + 1].feedback}</p>
-                        </div>
-                    ) : (
-                        <p>
-                          Click on a the 'Show Feedback' button of each message to
-                          view the specific improvements for that message.
-                        </p>
-                    )}
+                <div className="flex flex-col space-y-2 text-left">
+                  <h3 className="text-lg font-semibold">
+                    Conversation Feedback
+                  </h3>
+                  <div className="flex space-x-8">
+                    <p>Average Score</p>
+                    <Badge>
+                      {Math.round(
+                        messages.reduce((prev, curr) => {
+                          if (curr.score) {
+                            return curr.score + prev;
+                          } else {
+                            return prev;
+                          }
+                        }, 0) /
+                          (messages.length / 2)
+                      )}{" "}
+                      / 100
+                    </Badge>
                   </div>
+                  <div className="flex space-x-8">
+                    <p>{feedbackText}</p>
+                  </div>
+                  <h4 className="font-semibold mt-4">Individual Comment</h4>
+                  {commentIdx % 2 === 1 ? (
+                    <div className="space-y-2">
+                      <p className="italic text-sm">
+                        "{messages[commentIdx].text}"
+                      </p>
+                      <p>{messages[commentIdx + 1].feedback}</p>
+                    </div>
+                  ) : (
+                    <p>
+                      Click on a the 'Show Feedback' button of each message to
+                      view the specific improvements for that message.
+                    </p>
+                  )}
+                </div>
               ) : (
-                  <div className="flex flex-col space-y-2 text-left">
+                <div className="flex flex-col space-y-2 text-left">
                   {suggestions.length === 0 ? (
                     <div className="flex flex-col space-y-4 items-center">
                       <p className="text-sm">
-                        Unsure of what to reply? Click here to get some
-                        suggestions!
+                        Unsure of what to reply? Click the button below to get
+                        some suggestions!
                       </p>
                       <LoadingButton
                         className="flex items-center space-x-2"
