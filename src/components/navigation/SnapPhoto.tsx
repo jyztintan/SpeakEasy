@@ -101,7 +101,7 @@ export default function SnapPhoto({ isMobile }: { isMobile: boolean }) {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Take a Photo or Upload One</DialogTitle>
+          <DialogTitle>Customise Your Scenario</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

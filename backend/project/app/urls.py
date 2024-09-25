@@ -5,7 +5,7 @@ from .views import (
     get_scenarios,
     resource_scenario,
     create_conversation_response,
-    request_help,
+    request_help, get_feedback,
 )
 
 urlpatterns = [
@@ -15,4 +15,5 @@ urlpatterns = [
     path("scenarios/", resource_scenario),
     path("text/", create_conversation_response),
     path("get-help/", request_help),
+    path("feedback/", get_feedback)
 ]

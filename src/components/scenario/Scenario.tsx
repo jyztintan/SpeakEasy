@@ -23,7 +23,7 @@ When you stop talking, our app will recognise that and start processing your rep
 Watch Out: When you click into the scenario, our app will start the conversation and start speaking! Don't be alarmed, this is normal and expected as per an actual conversation!
 Do adjust your volume now to prevent our app from speaking too loudly!
 
-Choose from Suggestions: If you're unsure how to reply, we provide helpful suggested responses. Click on any of the suggestions to keep the conversation flowing.
+Get Help: If you're unsure how to reply, click the Get Help button for some helpful suggested responses. You may use these suggestions to keep the conversation flowing.
 
 Access Translation: If you need a little help, tap the Translate button to view the translation of the conversation in your native language.
 
