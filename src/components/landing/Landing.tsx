@@ -440,6 +440,7 @@ export default function LandingPage() {
                 value={emailText}
                 onChange={(e) => setEmailText(e.target.value)}
               />
+              <div className="pb-3"></div>
               <Textarea
                 className="mx-auto max-w-[700px] md:text-2xl text-black"
                 placeholder="Message Body"
