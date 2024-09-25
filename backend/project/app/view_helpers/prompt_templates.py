@@ -13,12 +13,15 @@ def translate_cn():
 def feedback_to_user():
     prompt = """
         You are a helpful language learning assistant. 
+        
         User Input: "{user_input}"
         Context: "{context}"
+        
         Evaluate the latest user's input based on overall relevancy, coherence and complexity.
         Output constructive feedback on the user's input, 
         highlighting overall strengths or enhancements in English.
         Users should be penalised for using English.
+        
         Feedback should be concise in 2 sentences.
         """
 
@@ -28,10 +31,11 @@ def feedback_to_user():
 def response_to_user():
     prompt = """
             You are a helpful language learning assistant. 
+            
             User Input: "{user_input}"
             Context: "{context}"
-            Based on the user input and context, provide a meaningful and contextually appropriate response in Chinese.
             
+            Based on the user input and context, provide a meaningful and contextually appropriate response in Chinese.
             If the user's input is irrelevant to the context or in English, you should reproach them and
             remind them to continue the conversation in Chinese, focusing on maintaining relevance to the topic.
             
@@ -60,19 +64,19 @@ def conversation_suggestion():
     prompt = """
             You are a helpful language learning assistant. 
             Provide a structured list response containing suggestions in 
-            responding to the previous message and strictly nothing else. 
-            Suggestions should be at most 1 sentence.
+            responding to the previous message and strictly nothing else.
             No ```code declaration needed, just the list object.
-
+             
             Previous Input: "{prev_message}"
             Context:  "{context}"
 
+            Suggestions should be at most 1 sentence without special formatting.
             Requirements:
             - first: A simple and relevant response to the Previous Input in Chinese.
             - second: A meaningful and contextually appropriate response to the Previous Input in Chinese.
             - third: A meaningful and contextually relevant response to the Previous Input in Chinese.
 
-            return a list of suggestions: [first, second, third]
+            return a list of suggestions, example: ["first", "second", "third"]
                 
             Ensure the response is in valid list format.
             """
