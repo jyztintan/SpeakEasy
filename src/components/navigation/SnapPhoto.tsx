@@ -110,7 +110,7 @@ export default function SnapPhoto({ isMobile }: { isMobile: boolean }) {
               name="image"
               render={({ field: { onChange } }) => (
                 <FormItem>
-                  <FormLabel>Upload Image</FormLabel>
+                  {isMobile ? (<FormLabel>Take a Picture</FormLabel>) : (<FormLabel>Upload Image</FormLabel>)}
                   <FormControl>
                     <Input
                       type="file"
