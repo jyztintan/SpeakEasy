@@ -15,10 +15,10 @@ def feedback_to_user():
         You are a helpful language learning assistant. 
         User Input: "{user_input}"
         Context: "{context}"
+        Evaluate the latest user's input based on overall relevancy, coherence and complexity.
         Output constructive feedback on the user's input, 
-        highlighting strengths and areas for improvement in English.
-        Evaluating the user's input based on relevancy, coherence, and complexity.
-        Feedback should be at most 3 sentences without any special formatting.
+        highlighting overall strengths or enhancements in English.
+        Feedback should be concise in 2 sentences.
         """
 
     return PromptTemplate.from_template(prompt)
@@ -32,7 +32,9 @@ def response_to_user():
         Based on the user input and context, provide a meaningful and contextually appropriate response in Chinese.
         If the user's input is irrelevant to the context or in English, you should reproach them and
         remind them to continue the conversation in Chinese, focusing on maintaining relevance to the topic.
-        Aim to engage the user by concluding your response with a question, encouraging a continued dialogue.
+        If the context objective is not met,
+        encourage user by concluding your response with a guiding question.
+        If context objective is met, conclude appropriately without further questions.
         Response should not be long.
         """
 
@@ -99,12 +101,12 @@ def refine_context():
 
 def generate_init_message():
     prompt = """
-            You should take on the responding role of the context,
+            You should take on the receiving role of the context,
             without responding to this prompt. 
-            For user: '{context}'
+            The user's objective is '{context}'
             Output an initial message to initiate a conversation 
-            about the context in Chinese.
-            It should not be too long.
+            as the receiving role of the context in Chinese.
+            It should be short and less than 2 sentences.
             """
 
     return PromptTemplate.from_template(prompt)
