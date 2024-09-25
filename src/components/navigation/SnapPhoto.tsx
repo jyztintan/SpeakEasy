@@ -77,8 +77,13 @@ export default function SnapPhoto({ isMobile }: { isMobile: boolean }) {
         method: "POST",
         body: formData,
       });
-      const { scenario_id } = await response.json();
-      navigate(`/dashboard/scenario?id=${scenario_id}`);
+
+      await response.json();
+
+      if (window.location.pathname != "/dashboard") {
+        navigate(`/dashboard`); // cannot navigate to scenario page directly because we do not have the necessary information for Scenario.tsx location.state
+      }
+
     } catch (error) {
       console.error("Error:", error);
     }
@@ -120,15 +125,23 @@ export default function SnapPhoto({ isMobile }: { isMobile: boolean }) {
                   )}
                   <FormControl>
                     <div>
-                      <label
-                        htmlFor="image-upload"
-                        className={`block md:hidden ${buttonVariants({
-                          variant: "outline",
-                          size: "sm",
-                        })}`}
-                      >
-                        Open Camera
-                      </label>
+                    <div className="flex items-center space-x-2">
+                        <label
+                          htmlFor="image-upload"
+                          className={`block md:hidden ${buttonVariants({
+                            variant: "outline",
+                            size: "sm",
+                          })}`}
+                        >
+                          Open Camera
+                        </label>
+                        {isMobile ? 
+                        (<span className="font-mono text-sm">
+                          {form.watch("image") && form.watch("image").length > 0 && form.watch("image")[0].name}
+                        </span>)
+                        : (<span></span>) 
+                        }
+                      </div>
                       <Input
                         id="image-upload"
                         type="file"
