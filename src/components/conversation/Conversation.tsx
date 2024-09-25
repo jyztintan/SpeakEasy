@@ -104,7 +104,6 @@ export default function ConversationPage() {
     const inputs = messages.map(msg => "{ role: " + msg.role + ", text: " + msg.text + "}").join(" ")
         + "{ role: \"user\", text:" + text + " }";
     setUserInputs(inputs);
-    console.log(inputs);
     getResponse(inputs).then((res) => {
       const message = {
         ...res,
@@ -152,6 +151,7 @@ export default function ConversationPage() {
     });
     const json = await response.json();
     const msg: ConversationResponse = { ...json, role: "assistant" };
+    console.log(msg.score);
     setIsLoading(false);
     return msg;
   }
@@ -321,7 +321,7 @@ export default function ConversationPage() {
                             return prev;
                           }
                         }, 0) /
-                          (messages.length / 2)
+                          ((messages.length - 1) / 2)
                       )}{" "}
                       / 100
                     </Badge>

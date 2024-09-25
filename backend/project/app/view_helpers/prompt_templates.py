@@ -26,63 +26,51 @@ def feedback_to_user():
 
 def response_to_user():
     prompt = """
-        You are a helpful language learning assistant. 
-        User Input: "{user_input}"
-        Context: "{context}"
-        Based on the user input and context, provide a meaningful and contextually appropriate response in Chinese.
-        If the user's input is irrelevant to the context or in English, you should reproach them and
-        remind them to continue the conversation in Chinese, focusing on maintaining relevance to the topic.
-        If the context objective is not met,
-        encourage user by concluding your response with a guiding question.
-        If context objective is met, conclude appropriately without further questions.
-        Response should not be long.
-        """
+            You are a helpful language learning assistant. 
+            User Input: "{user_input}"
+            Context: "{context}"
+            Based on the user input and context, provide a meaningful and contextually appropriate response in Chinese.
+            If the user's input is irrelevant to the context or in English, you should reproach them and
+            remind them to continue the conversation in Chinese, focusing on maintaining relevance to the topic.
+            If the context objective is not met,
+            encourage user by concluding your response with a guiding question.
+            If context objective is met, conclude appropriately without further questions.
+            Response should not be longer than 2 sentences.
+            """
 
     return PromptTemplate.from_template(prompt)
 
 
 def get_user_score():
     prompt = """
-        You are a helpful language learning assistant. 
-        User Input: "{user_input}"
-        Context: "{context}"
-        Strictly only output a numerical score between 0 and 100. 
-        evaluating the user's input based on relevancy, coherence, and complexity.
-        Take into account grammar and vocabulary.
-        """
-
+            You are a helpful language learning assistant. 
+            User Input: "{user_input}"
+            Context: "{context}"
+            Evaluate the latest user's input based on overall relevancy, coherence and complexity.
+            Output only a numerical score between 0 and 100.
+            """
     return PromptTemplate.from_template(prompt)
 
 
 def conversation_suggestion():
     prompt = """
             You are a helpful language learning assistant. 
-            Provide a structured JSON response containing the following fields 
-            based on the user's input and strictly nothing else. 
+            Provide a structured list response containing suggestions in 
+            responding to the previous message and strictly nothing else. 
             Suggestions should be at most 1 sentence.
-            No ```json declaration needed, just the JSON object.
+            No ```code declaration needed, just the list object.
 
             Previous Input: "{prev_message}"
             Context:  "{context}"
 
             Requirements:
-            - "first": A simple and relevant response to the Previous Input in Chinese.
-            - "first_en": A direct translation of the first suggestion in English.
-            - "second": A meaningful and contextually appropriate response to the Previous Input in Chinese.
-            - "second_en": A direct translation of the second suggestion in English.
-            - "third": A complex and contextually relevant response to the Previous Input in Chinese.
-            - "third_en": A direct translation of the third suggestion in English.
+            - first: A simple and relevant response to the Previous Input in Chinese.
+            - second: A meaningful and contextually appropriate response to the Previous Input in Chinese.
+            - third: A meaningful and contextually relevant response to the Previous Input in Chinese.
 
-            return a list of dictionaries
-                eg. dict(
-                "suggestions": 
-                    [
-                        dict("text": first, "translated_text": first_en),
-                        dict("text": second, "translated_text": second_en),
-                        dict("text": third, "translated_text": third_en)
-                    ]
-                )
-            Ensure the response is in valid JSON format with the exact field names specified.
+            return a list of suggestions: [first, second, third]
+                
+            Ensure the response is in valid list format.
             """
 
     return PromptTemplate.from_template(prompt)
@@ -106,6 +94,10 @@ def generate_init_message():
             The user's objective is '{context}'
             Output an initial message to initiate a conversation 
             as the receiving role of the context in Chinese.
+            
+            For example, if the user has to order food, you should assume the role of a waiter.
+            For example, if the user has to make a phone call, you should be the receiver.
+            
             It should be short and less than 2 sentences.
             """
 
@@ -117,8 +109,11 @@ def generate_final_feedback():
             You are a helpful language learning assistant. 
             User Input: "{user_input}"
             Context: "{context}"
-            Output constructive feedback on the overall user's input, 
-            highlighting strengths and areas for improvement based on relevancy, coherence, and complexity.
+            Output constructive feedback on the overall user's inputs,
+            highlighting overall strengths or enhancements:
+            - Relevancy
+            - Coherence
+            - Complexity
             Feedback should be concise and at most 3 sentences without any special formatting.
             """
 
