@@ -236,7 +236,7 @@ export default function LandingPage() {
               </div>
             </div> */}
             <div className="flex item-center mx-auto">
-            <iframe className="md:w-[700px] md:min-h-96 lg:w-[900px] lg:min-h-[500px]" src="https://www.youtube.com/embed/NoLF7Dlu5mc?si=bNnch8XYekAazUSD" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            <iframe className="md:w-[700px] md:min-h-96 lg:w-[900px] lg:min-h-[500px]" src="https://www.youtube.com/embed/NoLF7Dlu5mc?si=bNnch8XYekAazUSD" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
             </div>
           </div>
         </section>
