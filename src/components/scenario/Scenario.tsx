@@ -66,6 +66,29 @@ const ConversationGuide = () => {
         the Practice Now button in the image above and start learning. Have fun
         and speak freely!
       </p>
+      <br />
+      <p>
+        <strong>Permissions:</strong> Do note that you may have to allow access
+        to the microphone in your browser for our application to work as
+        intended. You can find more information about enabling microphone
+        permissions{" "}
+        <a
+          className="underline text-blue-500"
+          href="https://support.google.com/chrome/answer/2693767?hl=en&co=GENIE.Platform%3DDesktop"
+          target="_blank"
+        >
+          here
+        </a>{" "}
+        if you are on Chrome and{" "}
+        <a
+          className="underline text-blue-500"
+          href="https://help.doxy.me/en/articles/836274-camera-and-microphone-permission-safari"
+          target="_blank"
+        >
+          here
+        </a>{" "}
+        if you are on Safari.
+      </p>
     </div>
   );
 };
