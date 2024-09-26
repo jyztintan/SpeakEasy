@@ -16,12 +16,12 @@ from ..serializer import (
 load_dotenv()  # Need to call to load env variables
 API_KEY = os.getenv("OPENAI_API_KEY")
 MODEL = "gpt-4o-mini"
-MAX_TOKENS = 500
+MAX_TOKENS = 1000
 TEMPERATURE = 0.8  # Higher temperature for more 'interesting' responses
 llm = ChatOpenAI(api_key=API_KEY, temperature=TEMPERATURE, model=MODEL, max_tokens=MAX_TOKENS, presence_penalty=0.3)
-prompts = {"response_to_user":response_to_user(), "feedback_to_user":feedback_to_user(),
-           "translate_cn":translate_cn(), "get_user_score":get_user_score(),
-           "conversation_suggestion": conversation_suggestion(), "generate_final_feedback": generate_final_feedback()}
+prompts = {"response_to_user":response_to_user(), "feedback_to_user":feedback_to_user(), "translate_cn":translate_cn(),
+           "get_user_score":get_user_score(), "conversation_suggestion": conversation_suggestion(),
+           "generate_final_feedback": generate_final_feedback(), "get_user_inputs": get_user_inputs()}
 
 
 def response_to_conversation(request):
@@ -82,6 +82,7 @@ def response_to_get_help(request):
         )
     response = generate_openai_suggestions(prev_message, context_text)
     output = {"suggestions": response}
+    print(output)
     return JsonResponse(output)
 
 
@@ -91,6 +92,7 @@ def generate_openai_suggestions(prev_message, context_text):
     prompt = prompts["conversation_suggestion"]
     chain = prompt | llm
     response = chain.invoke({"prev_message": prev_message, "context": context_text}).content
+    print(response)
     try:
         response = json.loads(response)
     except json.JSONDecodeError:
@@ -122,6 +124,10 @@ def aggregate_feedback(request):
 
 
 def generate_openai_feedback(user_text, context_text):
-    prompt = prompts["generate_final_feedback"]
-    chain = prompt | llm
-    return chain.invoke({"user_input": user_text, "context": context_text}).content
+    prompt1 = prompts["get_user_inputs"]
+    chain = prompt1 | llm
+    refined = chain.invoke({"user_input": user_text, "context": context_text}).content
+    print(refined)
+    prompt2 = prompts["generate_final_feedback"]
+    chain = prompt2 | llm
+    return chain.invoke({"user_input": refined, "context": context_text}).content
