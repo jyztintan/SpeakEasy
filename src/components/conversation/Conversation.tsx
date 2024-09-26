@@ -67,6 +67,16 @@ export default function ConversationPage() {
 
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
 
+  const averageScore =
+    messages.length >= 2
+      ? Math.round(
+          messages.reduce((prev, curr) => {
+            return curr.score ? curr.score + prev : prev;
+          }, 0) /
+            ((messages.length - 1) / 2)
+        )
+      : 0;
+
   useEffect(() => {
     // Auto-scroll to the bottom when messages are updated
     if (messageContainerRef.current) {
@@ -101,8 +111,13 @@ export default function ConversationPage() {
     ]);
 
     // fetch AI's response and add to the conversation
-    const inputs = messages.map(msg => "{ role: " + msg.role + ", text: " + msg.text + "}").join(" ")
-        + "{ role: \"user\", text:" + text + " }";
+    const inputs =
+      messages
+        .map((msg) => "{ role: " + msg.role + ", text: " + msg.text + "}")
+        .join(" ") +
+      '{ role: "user", text:' +
+      text +
+      " }";
     setUserInputs(inputs);
     getResponse(inputs).then((res) => {
       const message = {
@@ -130,7 +145,7 @@ export default function ConversationPage() {
     recognition.start();
     setTimeout(() => {
       recognition.stop();
-    }, 10000); 
+    }, 10000);
   }
 
   async function getResponse(text: string): Promise<ConversationResponse> {
@@ -151,7 +166,7 @@ export default function ConversationPage() {
     });
     const json = await response.json();
     const msg: ConversationResponse = { ...json, role: "assistant" };
-    console.log(msg.score);
+    // console.log(msg.score);
     setIsLoading(false);
     return msg;
   }
@@ -312,19 +327,7 @@ export default function ConversationPage() {
                   </h3>
                   <div className="flex space-x-8">
                     <p>Average Score</p>
-                    <Badge>
-                      {Math.round(
-                        messages.reduce((prev, curr) => {
-                          if (curr.score) {
-                            return curr.score + prev;
-                          } else {
-                            return prev;
-                          }
-                        }, 0) /
-                          ((messages.length - 1) / 2)
-                      )}{" "}
-                      / 100
-                    </Badge>
+                    <Badge>{averageScore} / 100</Badge>
                   </div>
                   <div className="flex space-x-8">
                     <p>{feedbackText}</p>
