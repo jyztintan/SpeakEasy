@@ -82,7 +82,7 @@ def response_to_get_help(request):
         )
     response = generate_openai_suggestions(prev_message, context_text)
     output = {"suggestions": response}
-    print(output)
+    # print(output)
     return JsonResponse(output)
 
 
@@ -92,7 +92,7 @@ def generate_openai_suggestions(prev_message, context_text):
     prompt = prompts["conversation_suggestion"]
     chain = prompt | llm
     response = chain.invoke({"prev_message": prev_message, "context": context_text}).content
-    print(response)
+    # print(response)
     try:
         response = json.loads(response)
     except json.JSONDecodeError:
@@ -127,7 +127,8 @@ def generate_openai_feedback(user_text, context_text):
     prompt1 = prompts["get_user_inputs"]
     chain = prompt1 | llm
     refined = chain.invoke({"user_input": user_text, "context": context_text}).content
-    print(refined)
+    # print(refined)
     prompt2 = prompts["generate_final_feedback"]
     chain = prompt2 | llm
     return chain.invoke({"user_input": refined, "context": context_text}).content
+

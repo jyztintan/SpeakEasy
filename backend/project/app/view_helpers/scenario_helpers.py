@@ -2,6 +2,7 @@ import json
 import os
 
 from dotenv import load_dotenv
+from langchain_core.messages import HumanMessage
 from langchain_openai import ChatOpenAI
 from pymongo.errors import DuplicateKeyError, OperationFailure
 from django.http import JsonResponse, HttpResponse
@@ -17,10 +18,11 @@ from google.cloud import storage
 load_dotenv()  # Need to call to load env variables
 API_KEY = os.getenv("OPENAI_API_KEY")
 MODEL = "gpt-4o-mini"
-MAX_TOKENS = 500
+MAX_TOKENS = 1000
 TEMPERATURE = 0.2  # Limit randomness of response
 llm = ChatOpenAI(api_key=API_KEY, temperature=TEMPERATURE, model=MODEL, max_tokens=MAX_TOKENS)
-prompts = {"refine_context":refine_context(),
+prompts = {"process_image": process_image(),
+           "refine_context":refine_context(),
            "generate_init_message":generate_init_message(),
            "translate_cn":translate_cn()}
 
@@ -105,7 +107,7 @@ def create_scenario(request):
 
     # Refine context and get first message from GPT
     init_context = scenario_data.get("context")
-    response = generate_openai_init_response(init_context)
+    response = generate_openai_init_response(init_context, image_url)
     scenario_data["context"] = response.get("context")
     scenario_data["first_message"] = response.get("first_message")
     scenario_data["translated_first_message"] = response.get("translated_text")
@@ -130,11 +132,19 @@ def create_scenario(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-def generate_openai_init_response(init_context):
+def generate_openai_init_response(init_context, image_url):
+    prompt = prompts["process_image"]
+    prompt = prompt.format(context=init_context)
+    message_content = [
+        {"type": "text", "text": prompt},
+        {"type": "image_url", "image_url": {"url": image_url, "detail": "auto"}}
+    ]
+    description = llm.invoke([HumanMessage(content=message_content)]).content
+    # print(description)
     output = {}
     prompt = prompts["refine_context"]
     chain = prompt | llm
-    output["context"] = chain.invoke({"context": init_context}).content
+    output["context"] = chain.invoke({"context": init_context, "description": description}).content
     prompt = prompts["generate_init_message"]
     chain = prompt | llm
     output["first_message"] = chain.invoke({"context": output["context"]}).content

@@ -84,19 +84,37 @@ def conversation_suggestion():
     return PromptTemplate.from_template(prompt)
 
 
+def process_image():
+    prompt = """
+            Provide a detailed description of the image based on its relevance to a given context.
+
+            User's initial context: '{context}'
+     
+            If the image is relevant to the context, provide a detailed description.
+            If the image is not relevant, output an empty string.
+    """
+    return PromptTemplate.from_template(prompt)
+
+
 def refine_context():
     prompt = """
-            You are a helpful language learning assistant.
-             
-            User's initial context: '{context}'
-            
-            Output a refined version of the user's initial context that is coherent and understandable.
-            Reframe the context clearly as an objective task maintaining plain text without any special formatting.
-
-            If the user's initial context is not comprehensible, use the default context:
-            "Discuss with a friend about how your day has been."
+            You are a helpful language learning assistant tasked with refining user inputs into clear, actionable tasks.
+        
+            Parameters:
+            - Image Description: '{description}'
+            - User's Initial Context: '{context}'
+        
+            Instructions:
+            1. If the user's initial context is unclear or inappropriate, 
+            use the default context: "Discuss with a friend about how your day has been."
+            2. Incorporate any relevant details from the image description to enrich the context, if provided.
+            3. Reframe the context into a coherent and specific objective task. 
+            Avoid any special formatting in your response.
+        
+            Output:
+            Provide a refined version of the user's initial context or the default context as a 
+            clear, actionable task suitable for a language learning scenario.
             """
-
     return PromptTemplate.from_template(prompt)
 
 
