@@ -11,6 +11,7 @@ import { Home, LogOut, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useUserAuth } from "../auth/UserAuthContext";
 import SnapPhoto from "./SnapPhoto";
+import { cancelReading } from "../conversation/Conversation";
 
 const menuItems = [{ name: "Dashboard", icon: <Home size={14} /> }];
 
@@ -24,9 +25,9 @@ export default function Navbar() {
   };
 
   const DesktopNav = () => (
-    <nav className="hidden md:flex items-center justify-between bg-background p-4 border-b">
+    <nav className="hidden md:flex items-center justify-between bg-background p-4 border-b"  onClick={cancelReading}>
       <div className="flex items-center space-x-4">
-        <a href="/dashboard" className="text-2xl font-bold">
+        <a href="/dashboard" className="text-2xl font-bold" >
           <img src="/logo.svg" alt="logo" className="h-10" />
         </a>
         {/* {menuItems.map((item) => (
@@ -48,7 +49,7 @@ export default function Navbar() {
 
   const MobileNav = () => (
     <nav className="fixed bottom-0 left-0 right-0 bg-background p-2 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] md:hidden">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between" onClick={cancelReading}>
         <div className="flex justify-around flex-1">
           {menuItems.slice(0, 2).map((item) => (
             <a

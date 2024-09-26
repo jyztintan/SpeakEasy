@@ -79,6 +79,8 @@ Application: https://speakeasy-speakfreely.netlify.app/
 
 ## Frontend
 
+- TypeScript
+- React
 - ShadCN
 - TailwindCSS
 - Firebase Authentication

@@ -14,23 +14,61 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { apiUrl } from "@/main";
 
-const conversationGuide = `
-Welcome to your scenario! Here's how to get the most out of your conversation experience:
+const ConversationGuide = () => {
+  return (
+    <div>
+      <p>
+        Welcome to your scenario! Here's how to get the most out of your
+        conversation experience:
+      </p>
+      <br />
+      <p>
+        <strong>Start the Conversation:</strong> Click the Microphone button at
+        the bottom of the screen and start speaking in Chinese. As the
+        conversation flows, feel free to ask questions or respond naturally!
+        When you stop talking, our app will recognise that and start processing
+        your replies. Sit tight as we craft the best response for your reply!
+      </p>
+      <br />
+      <p>
+        <strong>Watch Out:</strong> When you click into the scenario, our app
+        will start the conversation and start speaking! Don't be alarmed, this
+        is normal and expected as per an actual conversation! If you would like
+        to stop the speaking, click on the Mute button in the speech bubble.{" "}
+        <strong>Do adjust your volume now</strong> to prevent our app from
+        speaking too loudly!
+      </p>
+      <br />
 
-Start the Conversation: Click the microphone button at the bottom of the screen and start speaking in Chinese. As the conversation flows, feel free to ask questions or respond naturally!
-When you stop talking, our app will recognise that and start processing your replies. Sit tight as we craft the best response for your reply!
-
-Watch Out: When you click into the scenario, our app will start the conversation and start speaking! Don't be alarmed, this is normal and expected as per an actual conversation!
-Do adjust your volume now to prevent our app from speaking too loudly!
-
-Get Help: If you're unsure how to reply, click the Get Help button for some helpful suggested responses. You may use these suggestions to keep the conversation flowing.
-
-Access Translation: If you need a little help, tap the Translate button to view the translation of the conversation in your native language.
-
-Learn from Feedback: At the end of the conversation, our AI will highlight any language improvements.
-
-Have Fun: This is your space to explore and practice! Don’t worry about making mistakes, we are here to help you learn.
-`;
+      <p>
+        <strong>Get Help:</strong> If you're unsure how to reply, click the Get
+        Help button on the right panel for some helpful suggested responses. You
+        may use these suggestions to keep the conversation flowing.
+      </p>
+      <br />
+      <p>
+        <strong>Access Translation:</strong> If you need a little help
+        understanding the replies, tap the See Translation button to view the
+        translation of the conversation in your native language.
+      </p>
+      <br />
+      <p>
+        <strong>Learn from Feedback:</strong> Once you are ready to end the
+        conversation, click on the End button at the bottom at the screen. Our
+        AI will provide constructive feedback and highlight some improvements.
+        In each speech bubble, you can click on the Show Feedback button to get
+        insights specific to that message.
+      </p>
+      <br />
+      <p>
+        <strong>Have Fun:</strong> This is your space to explore and practice!
+        Don’t worry about making mistakes, we are here to help you learn. Click
+        the Practice Now button in the image above and start learning. Have fun
+        and speak freely!
+      </p>
+    </div>
+  );
+};
 
 export default function ScenarioPage() {
   /**
@@ -78,7 +116,7 @@ export default function ScenarioPage() {
   };
 
   return (
-    <div className="min-h-screen w-screen pb-16">
+    <div className="min-h-screen w-screen pb-14">
       <Navbar />
       <div className="flex flex-col space-y-4 items-start p-4 w-full">
         <div className="relative w-full h-96">
@@ -107,9 +145,9 @@ export default function ScenarioPage() {
           </p>
         </div>
         <Separator className=" bg-black" />
-        <div className="text-left space-y-2 p-3 pb-8">
+        <div className="text-left space-y-2 p-3 pb-4">
           <h2 className="text-2xl font-bold">Guide for Beginners</h2>
-          <p className="whitespace-pre-wrap">{conversationGuide}</p>
+          <ConversationGuide />
         </div>
         <Separator className=" bg-black" />
       </div>
@@ -118,7 +156,7 @@ export default function ScenarioPage() {
           <DialogTrigger asChild>
             <Button
               variant="destructive"
-              className="z-10 text-lg font-semibold"
+              className="z-9 text-lg font-semibold"
               size="sm"
             >
               Delete Scenario

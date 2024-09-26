@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, LoadingButton } from "@/components/ui/button";
+import { Button, buttonVariants, LoadingButton } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -23,6 +23,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Camera } from "lucide-react";
 import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import * as z from "zod";
 import { FetchScenariosContext } from "../dashboard/Home";
 
@@ -50,6 +51,7 @@ const apiUrl = import.meta.env.VITE_BACKEND_URL;
 export default function SnapPhoto({ isMobile }: { isMobile: boolean }) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("SpeakEasyUser") as string);
   const user_id = user["uid"];
@@ -75,7 +77,13 @@ export default function SnapPhoto({ isMobile }: { isMobile: boolean }) {
         method: "POST",
         body: formData,
       });
-      await response.json(); // wait for backend to return
+
+      await response.json();
+
+      if (window.location.pathname != "/dashboard") {
+        navigate(`/dashboard`); // cannot navigate to scenario page directly because we do not have the necessary information for Scenario.tsx location.state
+      }
+
     } catch (error) {
       console.error("Error:", error);
     }
@@ -110,14 +118,39 @@ export default function SnapPhoto({ isMobile }: { isMobile: boolean }) {
               name="image"
               render={({ field: { onChange } }) => (
                 <FormItem>
-                  <FormLabel>Upload Image</FormLabel>
+                  {isMobile ? (
+                    <FormLabel>Take a Picture</FormLabel>
+                  ) : (
+                    <FormLabel>Upload Image</FormLabel>
+                  )}
                   <FormControl>
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      capture="environment"
-                      onChange={(e) => onChange(e.target.files)}
-                    />
+                    <div>
+                    <div className="flex items-center space-x-2">
+                        <label
+                          htmlFor="image-upload"
+                          className={`block md:hidden ${buttonVariants({
+                            variant: "outline",
+                            size: "sm",
+                          })}`}
+                        >
+                          Open Camera
+                        </label>
+                        {isMobile ? 
+                        (<span className="font-mono text-sm">
+                          {form.watch("image") && form.watch("image").length > 0 && form.watch("image")[0].name}
+                        </span>)
+                        : (<span></span>) 
+                        }
+                      </div>
+                      <Input
+                        id="image-upload"
+                        type="file"
+                        className="hidden md:block"
+                        accept="image/*"
+                        capture="environment"
+                        onChange={(e) => onChange(e.target.files)}
+                      />
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
