@@ -37,9 +37,9 @@ Application: https://speakeasy-speakfreely.netlify.app/
 
 - Matric Number: A0234509E
 - Contributions:
-  - Wrote APIs
+  - Wrote backend APIs
   - Hosted Frontend on Netlify and Backend on Vercel
-  - UI touch ups
+  - UI enhancements
   - Set up Google Authentication
   - Set up and implement Google Cloud Storage
 
@@ -74,6 +74,7 @@ Application: https://speakeasy-speakfreely.netlify.app/
 
   - OPENAI_API_KEY
   - GOOGLE_APPLICATION_CREDENTIALS_JSON
+  - MONGODB_KEY
 
 # Resources
 
@@ -93,3 +94,4 @@ Application: https://speakeasy-speakfreely.netlify.app/
 - MongoDB
 - Google Cloud Storage for blob store
 - Langchain
+- OpenAI LLM model
