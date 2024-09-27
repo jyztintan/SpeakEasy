@@ -88,7 +88,7 @@ const LoginPage = () => {
                   Terms of Service
                 </a>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="max-h-screen overflow-y-auto mt-10 w-[300px] h-[400px] md:w-[700px] md:h-[600px]">
                 <DialogHeader>
                   <DialogTitle>Terms of Service</DialogTitle>
                   <DialogDescription className="whitespace-pre-wrap">
@@ -104,7 +104,7 @@ const LoginPage = () => {
                   Privacy Policy
                 </a>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="max-h-screen overflow-y-auto mt-10 w-[300px] h-[400px] md:w-[700px] md:h-[600px]">
                 <DialogHeader>
                   <DialogTitle>Privacy Policy</DialogTitle>
                   <DialogDescription className="whitespace-pre-wrap">
