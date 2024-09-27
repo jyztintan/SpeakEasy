@@ -13,7 +13,7 @@ export default function LanguageCard({ scenario }: { scenario: Scenario }) {
 
   return (
     <div className="cursor-pointer" onClick={directToScenario}>
-      <Card className="pb-4">
+      <Card className="pb-4 hover:bg-slate-100">
         <div className="overflow-hidden">
           <img
             src={scenario.image}

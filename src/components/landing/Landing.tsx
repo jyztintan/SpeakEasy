@@ -195,7 +195,11 @@ export default function LandingPage() {
                 powered by AI
               </p>
               <a href="/login">
-                <Button size="lg" className="font-semibold text-lg">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="font-semibold text-lg"
+                >
                   Start Learning Now
                 </Button>
               </a>

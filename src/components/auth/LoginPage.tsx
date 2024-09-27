@@ -120,8 +120,8 @@ const LoginPage = () => {
       <div className="md:basis-1/2 flex flex-col space-y-8 items-center justify-center bg-[#8C52FF] text-white py-16 md:py-0">
         <blockquote className="text-xl font-semibold italic w-2/3">
           “Best language learning application on the market! Worth every penny!
-          I started not knowing a single thing about Chinese and now I can order
-          from the hawker stalls with ease.”
+          I started with only knowing basic Chinese and now I can order from the
+          hawker stalls with ease.”
         </blockquote>
         <p className="text-lg font-medium">— John Cena</p>
       </div>
